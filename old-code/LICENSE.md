@@ -1,7 +1,6 @@
 The MIT License (MIT)
 
-Copyright (c) 2024-present Christopher J. R. Rowe (<contact@cjrrowe.com>)  
-Copyright (c) 2016         Monica Turner  
+Copyright (c) 2016 Monica Turner
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
