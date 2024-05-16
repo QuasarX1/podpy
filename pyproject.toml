@@ -25,12 +25,21 @@ classifiers = [
   "Programming Language :: Python :: Implementation :: CPython",
   "Programming Language :: Python :: Implementation :: PyPy",
 ]
-dependencies = []
+dependencies = [
+  "numpy",
+  "scipy",
+  "matplotlib",
+  "astropy",
+  "QuasarCode",
+]
 
 [project.urls]
 Documentation = "https://github.com/QuasarX1/podpy-refocused#readme"
 Issues = "https://github.com/QuasarX1/podpy-refocused/issues"
 Source = "https://github.com/QuasarX1/podpy-refocused"
+
+[project.scripts]
+pod-run-example = "podpy_refocused._scripts.example:main"
 
 [tool.hatch.version]
 path = "src/podpy_refocused/__about__.py"

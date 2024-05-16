@@ -26,7 +26,7 @@ This software comes with a BASH installation script for use as a standalone peic
 ```
 and then, to make it avalible as a commandline utility, add the following to your .bashrc file:
 ```
-source <install location>/load.sh
+source <repo location>/load.sh
 ```
 (don't forget to run `source ~/.bashrc` after adding the above!)
 
@@ -49,6 +49,18 @@ hatch shell default
 ## License
 
 `podpy-refocused` is distributed under the terms of the [MIT](https://spdx.org/licenses/MIT.html) license (see [LICENSE.md](LICENSE.md)).
+
+## Usage
+
+To ensure the software has been installed correctly, try running the following from a scratch directory (it will create four image files):
+```console
+pod-run-example <repo location>/example_data/spectrum
+```
+This will produce the following files:
+- h1.png
+- c4.png
+- o6.png
+- example-tau-tau.png
 
 ## Original-README
 

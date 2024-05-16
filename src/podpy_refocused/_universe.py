@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: 2016 Monica Turner <turnerm@mit.edu>
+#
+# SPDX-License-Identifier: MIT
 """
 podpy is an implementatin of the pixel optical depth method as described in 
 Turner et al. 2014, MNRAS, 445, 794, and Aguirre et al. 2002, ApJ, 576, 1. 
@@ -63,9 +66,9 @@ f_si3 = np.array([1.669000])
 g_si3 = f_si3 * lambda_si3
 # SiII
 lambda_si2 = np.array([1260.4221, 1193.2897, 1190.4158, 989.8731,
-	1526.7066, 1304.3702, 1020.6989])
+       1526.7066, 1304.3702, 1020.6989])
 f_si2 = ([1.007000, 0.499100, 0.250200, 0.133000, 
-	0.11600, 0.09400, 0.028280]) 
+       0.11600, 0.09400, 0.028280]) 
 g_si2 = f_si2 * lambda_si2
 # MgII
 lambda_mg2 = np.array([2796.352, 2803.531])

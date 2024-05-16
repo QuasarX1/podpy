@@ -1,1 +1,5 @@
+# Compiled Python source files
+__pycache__/
+
+# Instalation environment folder
 environment/
