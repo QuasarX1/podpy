@@ -31,6 +31,7 @@ dependencies = [
   "matplotlib",
   "astropy",
   "QuasarCode",
+  "h5py",
 ]
 
 [project.urls]
