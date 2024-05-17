@@ -36,7 +36,7 @@ def main():
 #        os.path.join(os.getcwd(), os.path.dirname(__file__)))
 
     # Plots the recovered (corrected) tau against the original. For more
-    # details on the flag values, please see the Pod.Pod documentation. 
+    # details on the flag values, please see the Pod.Pod documentation.
     def plot_tau_rec(spec, ion):
         pobj = vars(spec)[ion]	
         bad_idx = np.where(pobj.flag % 2 != 0)
@@ -67,11 +67,11 @@ def main():
     filepath = os.path.abspath(sys.argv[1]) + "/"
 
     # Initialize Spectrum object, with option to manually mask bad regions as well
-    # as DLAs. See Spectrum.Spectrum and Spectrum.Kodiaq for details. 
-    spec = Spectrum.KodiaqFits(z_qso, 
-                            object_name, 
-                            filepath = filepath, 
-                            mask_badreg = True, 
+    # as DLAs. See Spectrum.Spectrum and Spectrum.Kodiaq for details.
+    spec = Spectrum.KodiaqFits(z_qso,
+                            object_name,
+                            filepath = filepath,
+                            mask_badreg = True,
                             mask_dla = True)
     #spec.plot_spectrum()
 
@@ -81,18 +81,18 @@ def main():
     plot_tau_rec(spec, "h1")
 
 
-    # For recovering CIV, an automatic continuum fitting redward of the 
-    # QSO Lya emission is applied. 
+    # For recovering CIV, an automatic continuum fitting redward of the
+    # QSO Lya emission is applied.
     spec.fit_continuum()
     spec.get_tau_rec_c4()
     plot_tau_rec(spec, "c4")
 
 
-    # For recovering OVI, it is best to unmask any DLAs in the Lya forest region  
-    spec_nodlamask = Spectrum.KodiaqFits(z_qso, 
-                                object_name, 
-                                filepath = filepath, 
-                                mask_badreg = True, 
+    # For recovering OVI, it is best to unmask any DLAs in the Lya forest region
+    spec_nodlamask = Spectrum.KodiaqFits(z_qso,
+                                object_name,
+                                filepath = filepath,
+                                mask_badreg = True,
                                 mask_dla = False)
     spec_nodlamask.get_tau_rec_h1()
     spec_nodlamask.get_tau_rec_o6()
