@@ -11,8 +11,8 @@ from matplotlib.axes import Axes
 from ._tools import PlotObjects, require_plottable, showable
 from .._TauBinned import BinnedOpticalDepthResults
 
-@showable
-@require_plottable
+@showable(kwarg_name = "show")
+@require_plottable(combined_kwarg_name = "plot_objects", figure_creation_settings_kwarg_name = "figure_creation_kwargs", figure_kwarg_name = "figure", axis_kwarg_name = "axis")
 def plot_pod_statistics(results: BinnedOpticalDepthResults,
                         label: str,
                         colour: Any = "blue",
@@ -36,7 +36,7 @@ def plot_pod_statistics(results: BinnedOpticalDepthResults,
                         density = False,
                         density_colourmap = "viridis",
                         density_uses_all_pixels = False
-                    ) -> Tuple[Union[Figure, None], Axes]:
+                    ) -> PlotObjects:
     """
     Plot the percentile statistics from a set of binned pixel optical depths.
     """
@@ -86,8 +86,8 @@ def plot_pod_statistics(results: BinnedOpticalDepthResults,
 #            figure.show()
     return plot_objects
 
-@showable
-@require_plottable
+@showable(kwarg_name = "show")
+@require_plottable(combined_kwarg_name = "plot_objects", figure_creation_settings_kwarg_name = "figure_creation_kwargs", figure_kwarg_name = "figure", axis_kwarg_name = "axis")
 def plot_pod_pair_density(
         results: BinnedOpticalDepthResults,
         #figure: Union[Figure, None] = None,
@@ -96,7 +96,7 @@ def plot_pod_pair_density(
         plot_objects: Union[PlotObjects, None] = None,
         colourmap: str = "viridis",
         use_all_pixels: bool = False
-    ) -> Tuple[Union[Figure, None], Axes]:
+    ) -> PlotObjects:
     """
     Create a hexbin plot to show the density of optical depth pixel pairs.
     """

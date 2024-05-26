@@ -468,9 +468,6 @@ def from_SpecWizard(filepath: str = "./LongSpectrum.hdf5", object_name: str = "S
             raise ValueError("Provided filter has length 0.")
         elif isinstance(sightline_filter[0], bool):
             raise ValueError(f"SpecWizard output file contained {n_spectra} spectra but provided filter expected {len(sightline_filter)}.")
-
-    spec_nums = tuple([v for v in range(first_spec_num, first_spec_num + n_spectra) if sightline_filter[v - 1]])
-    n_spectra = len(spec_nums)
     
     if isinstance(sightline_filter[0], bool) or isinstance(sightline_filter[0], np.bool_):
         pass
@@ -478,6 +475,9 @@ def from_SpecWizard(filepath: str = "./LongSpectrum.hdf5", object_name: str = "S
         sightline_filter = [i in sightline_filter for i in range(n_spectra)]
     else:
         raise TypeError(f"Sightline filter type should be integers or booleans, not {type(sightline_filter[0])}.")
+
+    spec_nums = tuple([v for v in range(first_spec_num, first_spec_num + n_spectra) if sightline_filter[v - 1]])
+    n_spectra = len(spec_nums)
 
     quasar_redshift = float(data["Header"].attrs["Z_qso"])
 

@@ -10,31 +10,30 @@ from .._Spectrum import from_SpecWizard, fit_continuum, recover_c4, recover_o6
 from .._TauBinned import bin_combined_pixels_from_SpecWizard, BinnedOpticalDepthResults
 from .. import plotting
 
-def __main(datafiles: List[str],
-           combine_datafiles: bool,
-           c4: bool, o6: bool,
-           x_min: float, x_max: float, y_min: Union[float, None], y_max: Union[float, None],
-           output_file: Union[str, None],
-           input_los_mask: Union[List[List[bool]], None],
-           aguirre05_obs: bool, turner16_obs: bool, turner16_synthetic: bool,
-           flag_h1_corrections_only: bool, no_h1_corrections: bool, no_metal_corrections: bool,
-           metal_flat_level_offset: Union[List[float], None],
-           labels: Union[List[str], None],
-           linestyles: Union[List[str], None],
-           colours: Union[List[str], None],
-           title: Union[str, None],
-           density: bool,
-           density_dataset: int,
-           density_colourmap: str):
+def __main(
+            datafiles: List[str],
+            combine_datafiles: bool,
+            c4: bool, o6: bool,
+            x_min: float, x_max: float, y_min: Union[float, None], y_max: Union[float, None],
+            output_file: Union[str, None],
+            input_los_mask: Union[List[List[bool]], None],
+            aguirre05_obs: bool, turner16_obs: bool, turner16_synthetic: bool,
+            flag_h1_corrections_only: bool, no_h1_corrections: bool, no_metal_corrections: bool,
+            metal_flat_level_offset: Union[List[float], None],
+            labels: Union[List[str], None],
+            linestyles: Union[List[str], None],
+            colours: Union[List[str], None],
+            title: Union[str, None],
+            density: bool,
+            density_dataset: int,
+            density_colourmap: str
+        ) -> None:
     
     if not (c4 or o6):
         Console.print_error("Metal ion must be specified!")
         Console.print_info("Terminating...")
         return
     ion_string = "c4" if c4 else "o6"
-    
-    if no_metal_corrections:
-        raise NotImplementedError("No current way to allow this.")#TODO:
 
     # Load and process data
 
@@ -108,7 +107,7 @@ def main():
                                    ["podpy-refocused"],
                                    [],
                                    [],
-                                   [["datafiles",                   "i",    "Semicolon seperated list of SpecWizard output files. Defaults to a single file in the current working directory named \"LongSpectrum.hdf5\"", False, False, ScriptWrapper.make_list_converter(";"), ["./LongSpectrum.hdf5"]],
+                                   [["datafiles",                   "i",    "Semicolon seperated list of SpecWizard output files. Defaults to a single file in the current working directory named \"LongSpectrum.hdf5\".", False, False, ScriptWrapper.make_list_converter(";"), ["./LongSpectrum.hdf5"]],
                                     ["combine-datafiles",           None,   "Combine the results from all data files into a single dataset.anUses the method from Turner et al. 2016 for combining data from different QSOs.", False, True, None, None],
                                     ["c4",                          None,   "Select C IV as the metal ion.", False, True, None, None, ["o6"]],
                                     ["o6",                          None,   "Select O VI as the metal ion.", False, True, None, None, ["c4"]],
@@ -123,7 +122,7 @@ def main():
                                     ["turner16-synthetic",          None,   "Plot the SpecWizard data from Turner et al. 2016.", False, True, None, None],
                                     ["flag-h1-corrections-only",    None,   "Identify saturated H I pixels, but make no attempt to correct them.", False, True, None, None],
                                     ["no-h1-corrections",           None,   "Make no alterations to saturated H I pixels.", False, True, None, None],
-                                    ["no-metal-corrections",        None,   "Make no alterations to saturated metal pixels.\nNOT YET IMPLEMENTED!", False, True, None, None],
+                                    ["no-metal-corrections",        None,   "Make no alterations to saturated metal pixels.", False, True, None, None],
                                     ["metal-flat-level-offset",     None,   "Value of log10 tau_Z to add to recovered metal optical depths (in non-log space).\nUse a semicolon seperated list if a different value is required for each data file.", False, False, ScriptWrapper.make_list_converter(";", float), None],
                                     ["labels",                      None,   "Custom dataset label(s).\nUse a semicolon seperated list if more than one data file is specified.", False, False, ScriptWrapper.make_list_converter(";"), None],
                                     ["linestyles",                  None,   "Custom dataset line style(s).\nUse a semicolon seperated list if more than one data file is specified.", False, False, ScriptWrapper.make_list_converter(";"), None],

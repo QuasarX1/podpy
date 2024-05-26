@@ -43,6 +43,7 @@ Source = "https://github.com/QuasarX1/podpy-refocused"
 [project.scripts]
 pod-run-example = "podpy_refocused._scripts.example:main"
 pod-plot-specwizard-relation = "podpy_refocused._scripts.plot_from_specwizard:main"
+pod-plot-specwizard-spectrum = "podpy_refocused._scripts.spectrum_from_specwizard:main"
 
 [tool.hatch.version]
 path = "src/podpy_refocused/__about__.py"
