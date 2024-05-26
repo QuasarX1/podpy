@@ -15,6 +15,8 @@ import matplotlib.pyplot as plt
 from astropy.io import fits
 import os
 import sys
+import h5py as h5
+from typing import Tuple, List, Union
 
 from . import _universe as un
 from ._Pod import Pod, LymanAlpha, Metal
@@ -288,8 +290,8 @@ class Spectrum:
         """
         self.get_tau_rec_ion("si4", 0, 0, 1, **kwargs)
 
-    def fit_continuum(self, 
-                    bin_size = 20.0,		
+    def fit_continuum(self,
+                    bin_size = 20.0,	
                     n_cf_sigma = 2.0,
                     max_iterations = 20):
         """
@@ -446,3 +448,85 @@ class UserInput(Spectrum):
         # Prep spectrum
         self.prep_spectrum()
         print("*** Done ***\n")
+
+def from_SpecWizard(filepath: str = "./LongSpectrum.hdf5", object_name: str = "SpecWizard_data", sightline_filter: Union[List[bool], List[int], None] = None, mask_bad_regions: bool = True, mask_dla: bool = True, identify_h1_contamination: bool = True, correct_h1_contamination: bool = True, n_higher_order_lyman: int = 16, saturationn_sigma_limit: float = None) -> Tuple[UserInput, ...]:
+    """
+    Loads data from a .hdf5 SpecWizard output file.
+
+    Set 'mask_dla' to False if recovering O VI (see example script).
+    """
+
+    data = h5.File(filepath)
+
+    first_spec_num = int(data["Parameters/SpecWizardRuntimeParameters"].attrs["first_specnum"])
+    n_spectra = int(data["Parameters/SpecWizardRuntimeParameters"].attrs["NumberOfSpectra"])
+
+    if sightline_filter is None:
+        sightline_filter = np.full(n_spectra, True, dtype = bool)
+    elif len(sightline_filter) != n_spectra:
+        if len(sightline_filter) == 0:
+            raise ValueError("Provided filter has length 0.")
+        elif isinstance(sightline_filter[0], bool):
+            raise ValueError(f"SpecWizard output file contained {n_spectra} spectra but provided filter expected {len(sightline_filter)}.")
+
+    spec_nums = tuple([v for v in range(first_spec_num, first_spec_num + n_spectra) if sightline_filter[v - 1]])
+    n_spectra = len(spec_nums)
+    
+    if isinstance(sightline_filter[0], bool) or isinstance(sightline_filter[0], np.bool_):
+        pass
+    elif isinstance(sightline_filter[0], int):
+        sightline_filter = [i in sightline_filter for i in range(n_spectra)]
+    else:
+        raise TypeError(f"Sightline filter type should be integers or booleans, not {type(sightline_filter[0])}.")
+
+    quasar_redshift = float(data["Header"].attrs["Z_qso"])
+
+    wavelengths = data["Wavelength_Ang"][:]
+    fluxes = np.array([data[f"Spectrum{n}/Flux"][:] for n in spec_nums])
+    flux_error_sigmas = np.array([data[f"Spectrum{n}/Noise_Sigma"][:] for n in spec_nums])
+
+    lyman_alpha_kwargs = {}
+    lyman_alpha_kwargs["n_higher_order"] = n_higher_order_lyman
+    lyman_alpha_kwargs["correct_contam"] = 0 if not identify_h1_contamination else 1 if not correct_h1_contamination else 2
+    if saturationn_sigma_limit is not None:
+        lyman_alpha_kwargs["nsigma_sat"] = saturationn_sigma_limit
+    spectrum_objects = []
+    for i in range(n_spectra):
+        spectrum_objects.append(UserInput(quasar_redshift, object_name, wavelengths, fluxes[i], flux_error_sigmas[i], mask_badreg = True, mask_dla = True))
+        spectrum_objects[-1].get_tau_rec_h1(**lyman_alpha_kwargs)
+
+    return tuple(spectrum_objects)
+
+def fit_continuum(*spectra: UserInput) -> None:
+    for spectrum in spectra:
+        spectrum.fit_continuum()
+
+def recover_c4(*spectra: UserInput, observed_log10_flat_level = None, apply_recomended_corrections = True, saturationn_sigma_limit: float = None) -> None:
+    offset = None if observed_log10_flat_level is None else 10**(observed_log10_flat_level)
+    for spectrum in spectra:
+        if apply_recomended_corrections:
+            kwargs = {}
+            if saturationn_sigma_limit is not None:
+                kwargs["nsigma_sat"] = saturationn_sigma_limit
+                kwargs["nsigma_dm"] = saturationn_sigma_limit
+                kwargs["nsigma_contam"] = saturationn_sigma_limit
+            spectrum.get_tau_rec_c4(**kwargs)
+        else:
+            spectrum.get_tau_rec_ion("c4", False, False, False)
+        if observed_log10_flat_level is not None:
+            spectrum.c4.tau_rec = np.log10(10**(spectrum.c4.tau_rec) + offset)
+
+def recover_o6(*spectra: UserInput, observed_log10_flat_level = None, apply_recomended_corrections = True, n_higher_order_lyman: int = 16, saturationn_sigma_limit: float = None) -> None:
+    offset = None if observed_log10_flat_level is None else 10**(observed_log10_flat_level)
+    for spectrum in spectra:
+        if apply_recomended_corrections:
+            kwargs = {}
+            if saturationn_sigma_limit is not None:
+                kwargs["nsigma_sat"] = saturationn_sigma_limit
+                kwargs["nsigma_dm"] = saturationn_sigma_limit
+                kwargs["nsigma_contam"] = saturationn_sigma_limit
+            spectrum.get_tau_rec_o6(n_higher_order = n_higher_order_lyman, **kwargs)
+        else:
+            spectrum.get_tau_rec_ion("o6", False, False, False)
+        if observed_log10_flat_level is not None:
+            spectrum.o6.tau_rec = np.log10(10**(spectrum.o6.tau_rec) + 10**(offset))

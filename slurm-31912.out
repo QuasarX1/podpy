@@ -1,0 +1,3454 @@
+           [38;5;127mapps[0m/[38;5;172mpython3[0m/[38;5;67m3.10.5[0m/[38;5;68mgcc-8.5.0[0m ... UNLOADING --> [0;32mOK[0m
+                         [38;5;127mlibs[0m/[38;5;172mgcc[0m/[38;5;67msystem[0m ... UNLOADING --> [0;32mOK[0m
+[38;5;127mapps[0m/[38;5;172mpython3[0m/[38;5;67m3.10.5[0m/[38;5;68mgcc-8.5.0[0m
+ | -- [38;5;127mlibs[0m/[38;5;172mgcc[0m/[38;5;67msystem[0m
+ |    * --> [0;32mOK[0m
+ |
+ [0;32mOK[0m
+/users/aricrowe/development/podpy-refocused/src/podpy_refocused/_Spectrum.py:119: RuntimeWarning: invalid value encountered in log
+  self.tau = np.where(negflux, Pod.TAU_MAX, -np.log(self.flux))
+/users/aricrowe/development/podpy-refocused/src/podpy_refocused/_Pod.py:89: RuntimeWarning: invalid value encountered in log
+  self.tau = np.where(negative_flux, Pod.TAU_MAX, -np.log(self.flux))
+/users/aricrowe/development/podpy-refocused/src/podpy_refocused/_Pod.py:221: RuntimeWarning: invalid value encountered in log
+  -np.log(flux_higher_order) * un.g_h1[0] / un.g_h1[ih1])
+/users/aricrowe/development/podpy-refocused/src/podpy_refocused/_Pod.py:508: RuntimeWarning: invalid value encountered in log
+  tau = np.where(saturated, Pod.TAU_MAX, -np.log(self.spectrum.flux))
+
+*** Getting spectrum ***
+*** Done ***
+
+*** Finding tau_rec for h1 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 4820.9 5656.46
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Pixels analyzed: 41779
+Number of saturated pixels: 1654
+Number of these pixels that have lower optical depth in higher order lines:
+1654
+*** Done ***
+
+Fitting continuum...
+...using 19 bins of 94.01739631578948 A
+...done
+
+*** Finding tau_rec for c4 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 6139.571315852877 7203.683869250383
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Part B: correct for self contamination
+Part (i)
+Number of contaminated / out of range pixels: 11
+Pixels remaining: 41768
+Part (ii)
+*** Done ***
+
+
+*** Getting spectrum ***
+*** Done ***
+
+*** Finding tau_rec for h1 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 4820.9 5656.46
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Pixels analyzed: 41779
+Number of saturated pixels: 1748
+Number of these pixels that have lower optical depth in higher order lines:
+1748
+*** Done ***
+
+Fitting continuum...
+...using 19 bins of 94.01739631578948 A
+...done
+
+*** Finding tau_rec for c4 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 6139.571315852877 7203.683869250383
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Part B: correct for self contamination
+Part (i)
+Number of contaminated / out of range pixels: 16
+Pixels remaining: 41763
+Part (ii)
+*** Done ***
+
+
+*** Getting spectrum ***
+*** Done ***
+
+*** Finding tau_rec for h1 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 4820.9 5656.46
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Pixels analyzed: 41779
+Number of saturated pixels: 2477
+Number of these pixels that have lower optical depth in higher order lines:
+2319
+*** Done ***
+
+Fitting continuum...
+...using 19 bins of 94.01739631578948 A
+...done
+
+*** Finding tau_rec for c4 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 6139.571315852877 7203.683869250383
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Part B: correct for self contamination
+Part (i)
+Number of contaminated / out of range pixels: 281
+Pixels remaining: 41498
+Part (ii)
+*** Done ***
+
+
+*** Getting spectrum ***
+*** Done ***
+
+*** Finding tau_rec for h1 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 4820.9 5656.46
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Pixels analyzed: 41779
+Number of saturated pixels: 1944
+Number of these pixels that have lower optical depth in higher order lines:
+1944
+*** Done ***
+
+Fitting continuum...
+...using 19 bins of 94.01739631578948 A
+...done
+
+*** Finding tau_rec for c4 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 6139.571315852877 7203.683869250383
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Part B: correct for self contamination
+Part (i)
+Number of contaminated / out of range pixels: 0
+Pixels remaining: 41779
+Part (ii)
+*** Done ***
+
+
+*** Getting spectrum ***
+*** Done ***
+
+*** Finding tau_rec for h1 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 4820.9 5656.46
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Pixels analyzed: 41779
+Number of saturated pixels: 2417
+Number of these pixels that have lower optical depth in higher order lines:
+2412
+*** Done ***
+
+Fitting continuum...
+...using 19 bins of 94.01739631578948 A
+...done
+
+*** Finding tau_rec for c4 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 6139.571315852877 7203.683869250383
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Part B: correct for self contamination
+Part (i)
+Number of contaminated / out of range pixels: 308
+Pixels remaining: 41471
+Part (ii)
+*** Done ***
+
+
+*** Getting spectrum ***
+*** Done ***
+
+*** Finding tau_rec for h1 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 4820.9 5656.46
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Pixels analyzed: 41779
+Number of saturated pixels: 2222
+Number of these pixels that have lower optical depth in higher order lines:
+2222
+*** Done ***
+
+Fitting continuum...
+...using 19 bins of 94.01739631578948 A
+...done
+
+*** Finding tau_rec for c4 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 6139.571315852877 7203.683869250383
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Part B: correct for self contamination
+Part (i)
+Number of contaminated / out of range pixels: 155
+Pixels remaining: 41624
+Part (ii)
+*** Done ***
+
+
+*** Getting spectrum ***
+*** Done ***
+
+*** Finding tau_rec for h1 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 4820.9 5656.46
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Pixels analyzed: 41779
+Number of saturated pixels: 2100
+Number of these pixels that have lower optical depth in higher order lines:
+2100
+*** Done ***
+
+Fitting continuum...
+...using 19 bins of 94.01739631578948 A
+...done
+
+*** Finding tau_rec for c4 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 6139.571315852877 7203.683869250383
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Part B: correct for self contamination
+Part (i)
+Number of contaminated / out of range pixels: 17
+Pixels remaining: 41762
+Part (ii)
+*** Done ***
+
+
+*** Getting spectrum ***
+*** Done ***
+
+*** Finding tau_rec for h1 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 4820.9 5656.46
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Pixels analyzed: 41779
+Number of saturated pixels: 1795
+Number of these pixels that have lower optical depth in higher order lines:
+1795
+*** Done ***
+
+Fitting continuum...
+...using 19 bins of 94.01739631578948 A
+...done
+
+*** Finding tau_rec for c4 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 6139.571315852877 7203.683869250383
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Part B: correct for self contamination
+Part (i)
+Number of contaminated / out of range pixels: 44
+Pixels remaining: 41735
+Part (ii)
+*** Done ***
+
+
+*** Getting spectrum ***
+*** Done ***
+
+*** Finding tau_rec for h1 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 4820.9 5656.46
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Pixels analyzed: 41779
+Number of saturated pixels: 1532
+Number of these pixels that have lower optical depth in higher order lines:
+1532
+*** Done ***
+
+Fitting continuum...
+...using 19 bins of 94.01739631578948 A
+...done
+
+*** Finding tau_rec for c4 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 6139.571315852877 7203.683869250383
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Part B: correct for self contamination
+Part (i)
+Number of contaminated / out of range pixels: 122
+Pixels remaining: 41657
+Part (ii)
+*** Done ***
+
+
+*** Getting spectrum ***
+*** Done ***
+
+*** Finding tau_rec for h1 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 4820.9 5656.46
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Pixels analyzed: 41779
+Number of saturated pixels: 1242
+Number of these pixels that have lower optical depth in higher order lines:
+1242
+*** Done ***
+
+Fitting continuum...
+...using 19 bins of 94.01739631578948 A
+...done
+
+*** Finding tau_rec for c4 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 6139.571315852877 7203.683869250383
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Part B: correct for self contamination
+Part (i)
+Number of contaminated / out of range pixels: 1
+Pixels remaining: 41778
+Part (ii)
+*** Done ***
+
+
+*** Getting spectrum ***
+*** Done ***
+
+*** Finding tau_rec for h1 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 4820.9 5656.46
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Pixels analyzed: 41779
+Number of saturated pixels: 2051
+Number of these pixels that have lower optical depth in higher order lines:
+1978
+*** Done ***
+
+Fitting continuum...
+...using 19 bins of 94.01739631578948 A
+...done
+
+*** Finding tau_rec for c4 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 6139.571315852877 7203.683869250383
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Part B: correct for self contamination
+Part (i)
+Number of contaminated / out of range pixels: 0
+Pixels remaining: 41779
+Part (ii)
+*** Done ***
+
+
+*** Getting spectrum ***
+*** Done ***
+
+*** Finding tau_rec for h1 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 4820.9 5656.46
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Pixels analyzed: 41779
+Number of saturated pixels: 1873
+Number of these pixels that have lower optical depth in higher order lines:
+1832
+*** Done ***
+
+Fitting continuum...
+...using 19 bins of 94.01739631578948 A
+...done
+
+*** Finding tau_rec for c4 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 6139.571315852877 7203.683869250383
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Part B: correct for self contamination
+Part (i)
+Number of contaminated / out of range pixels: 69
+Pixels remaining: 41710
+Part (ii)
+*** Done ***
+
+
+*** Getting spectrum ***
+*** Done ***
+
+*** Finding tau_rec for h1 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 4820.9 5656.46
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Pixels analyzed: 41779
+Number of saturated pixels: 2206
+Number of these pixels that have lower optical depth in higher order lines:
+2169
+*** Done ***
+
+Fitting continuum...
+...using 19 bins of 94.01739631578948 A
+...done
+
+*** Finding tau_rec for c4 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 6139.571315852877 7203.683869250383
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Part B: correct for self contamination
+Part (i)
+Number of contaminated / out of range pixels: 162
+Pixels remaining: 41617
+Part (ii)
+*** Done ***
+
+
+*** Getting spectrum ***
+*** Done ***
+
+*** Finding tau_rec for h1 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 4820.9 5656.46
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Pixels analyzed: 41779
+Number of saturated pixels: 1383
+Number of these pixels that have lower optical depth in higher order lines:
+1355
+*** Done ***
+
+Fitting continuum...
+...using 19 bins of 94.01739631578948 A
+...done
+
+*** Finding tau_rec for c4 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 6139.571315852877 7203.683869250383
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Part B: correct for self contamination
+Part (i)
+Number of contaminated / out of range pixels: 129
+Pixels remaining: 41650
+Part (ii)
+*** Done ***
+
+
+*** Getting spectrum ***
+*** Done ***
+
+*** Finding tau_rec for h1 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 4820.9 5656.46
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Pixels analyzed: 41779
+Number of saturated pixels: 2369
+Number of these pixels that have lower optical depth in higher order lines:
+2325
+*** Done ***
+
+Fitting continuum...
+...using 19 bins of 94.01739631578948 A
+...done
+
+*** Finding tau_rec for c4 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 6139.571315852877 7203.683869250383
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Part B: correct for self contamination
+Part (i)
+Number of contaminated / out of range pixels: 259
+Pixels remaining: 41520
+Part (ii)
+*** Done ***
+
+
+*** Getting spectrum ***
+*** Done ***
+
+*** Finding tau_rec for h1 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 4820.9 5656.46
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Pixels analyzed: 41779
+Number of saturated pixels: 1735
+Number of these pixels that have lower optical depth in higher order lines:
+1495
+*** Done ***
+
+Fitting continuum...
+...using 19 bins of 94.01739631578948 A
+...done
+
+*** Finding tau_rec for c4 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 6139.571315852877 7203.683869250383
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Part B: correct for self contamination
+Part (i)
+Number of contaminated / out of range pixels: 97
+Pixels remaining: 41682
+Part (ii)
+*** Done ***
+
+
+*** Getting spectrum ***
+*** Done ***
+
+*** Finding tau_rec for h1 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 4820.9 5656.46
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Pixels analyzed: 41779
+Number of saturated pixels: 1911
+Number of these pixels that have lower optical depth in higher order lines:
+1858
+*** Done ***
+
+Fitting continuum...
+...using 19 bins of 94.01739631578948 A
+...done
+
+*** Finding tau_rec for c4 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 6139.571315852877 7203.683869250383
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Part B: correct for self contamination
+Part (i)
+Number of contaminated / out of range pixels: 112
+Pixels remaining: 41667
+Part (ii)
+*** Done ***
+
+
+*** Getting spectrum ***
+*** Done ***
+
+*** Finding tau_rec for h1 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 4820.9 5656.46
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Pixels analyzed: 41779
+Number of saturated pixels: 1925
+Number of these pixels that have lower optical depth in higher order lines:
+1925
+*** Done ***
+
+Fitting continuum...
+...using 19 bins of 94.01739631578948 A
+...done
+
+*** Finding tau_rec for c4 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 6139.571315852877 7203.683869250383
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Part B: correct for self contamination
+Part (i)
+Number of contaminated / out of range pixels: 55
+Pixels remaining: 41724
+Part (ii)
+*** Done ***
+
+
+*** Getting spectrum ***
+*** Done ***
+
+*** Finding tau_rec for h1 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 4820.9 5656.46
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Pixels analyzed: 41779
+Number of saturated pixels: 1509
+Number of these pixels that have lower optical depth in higher order lines:
+1477
+*** Done ***
+
+Fitting continuum...
+...using 19 bins of 94.01739631578948 A
+...done
+
+*** Finding tau_rec for c4 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 6139.571315852877 7203.683869250383
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Part B: correct for self contamination
+Part (i)
+Number of contaminated / out of range pixels: 156
+Pixels remaining: 41623
+Part (ii)
+*** Done ***
+
+
+*** Getting spectrum ***
+*** Done ***
+
+*** Finding tau_rec for h1 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 4820.9 5656.46
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Pixels analyzed: 41779
+Number of saturated pixels: 2442
+Number of these pixels that have lower optical depth in higher order lines:
+2369
+*** Done ***
+
+Fitting continuum...
+...using 19 bins of 94.01739631578948 A
+...done
+
+*** Finding tau_rec for c4 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 6139.571315852877 7203.683869250383
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Part B: correct for self contamination
+Part (i)
+Number of contaminated / out of range pixels: 167
+Pixels remaining: 41612
+Part (ii)
+*** Done ***
+
+
+*** Getting spectrum ***
+*** Done ***
+
+*** Finding tau_rec for h1 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 4820.9 5656.46
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Pixels analyzed: 41779
+Number of saturated pixels: 2847
+Number of these pixels that have lower optical depth in higher order lines:
+2714
+*** Done ***
+
+Fitting continuum...
+...using 19 bins of 94.01739631578948 A
+...done
+
+*** Finding tau_rec for c4 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 6139.571315852877 7203.683869250383
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Part B: correct for self contamination
+Part (i)
+Number of contaminated / out of range pixels: 207
+Pixels remaining: 41572
+Part (ii)
+*** Done ***
+
+
+*** Getting spectrum ***
+*** Done ***
+
+*** Finding tau_rec for h1 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 4820.9 5656.46
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Pixels analyzed: 41779
+Number of saturated pixels: 1544
+Number of these pixels that have lower optical depth in higher order lines:
+1490
+*** Done ***
+
+Fitting continuum...
+...using 19 bins of 94.01739631578948 A
+...done
+
+*** Finding tau_rec for c4 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 6139.571315852877 7203.683869250383
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Part B: correct for self contamination
+Part (i)
+Number of contaminated / out of range pixels: 135
+Pixels remaining: 41644
+Part (ii)
+*** Done ***
+
+
+*** Getting spectrum ***
+*** Done ***
+
+*** Finding tau_rec for h1 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 4820.9 5656.46
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Pixels analyzed: 41779
+Number of saturated pixels: 1872
+Number of these pixels that have lower optical depth in higher order lines:
+1863
+*** Done ***
+
+Fitting continuum...
+...using 19 bins of 94.01739631578948 A
+...done
+
+*** Finding tau_rec for c4 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 6139.571315852877 7203.683869250383
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Part B: correct for self contamination
+Part (i)
+Number of contaminated / out of range pixels: 57
+Pixels remaining: 41722
+Part (ii)
+*** Done ***
+
+
+*** Getting spectrum ***
+*** Done ***
+
+*** Finding tau_rec for h1 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 4820.9 5656.46
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Pixels analyzed: 41779
+Number of saturated pixels: 1604
+Number of these pixels that have lower optical depth in higher order lines:
+1604
+*** Done ***
+
+Fitting continuum...
+...using 19 bins of 94.01739631578948 A
+...done
+
+*** Finding tau_rec for c4 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 6139.571315852877 7203.683869250383
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Part B: correct for self contamination
+Part (i)
+Number of contaminated / out of range pixels: 19
+Pixels remaining: 41760
+Part (ii)
+*** Done ***
+
+
+*** Getting spectrum ***
+*** Done ***
+
+*** Finding tau_rec for h1 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 4820.9 5656.46
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Pixels analyzed: 41779
+Number of saturated pixels: 2350
+Number of these pixels that have lower optical depth in higher order lines:
+2259
+*** Done ***
+
+Fitting continuum...
+...using 19 bins of 94.01739631578948 A
+...done
+
+*** Finding tau_rec for c4 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 6139.571315852877 7203.683869250383
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Part B: correct for self contamination
+Part (i)
+Number of contaminated / out of range pixels: 122
+Pixels remaining: 41657
+Part (ii)
+*** Done ***
+
+
+*** Getting spectrum ***
+*** Done ***
+
+*** Finding tau_rec for h1 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 4820.9 5656.46
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Pixels analyzed: 41779
+Number of saturated pixels: 1717
+Number of these pixels that have lower optical depth in higher order lines:
+1682
+*** Done ***
+
+Fitting continuum...
+...using 19 bins of 94.01739631578948 A
+...done
+
+*** Finding tau_rec for c4 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 6139.571315852877 7203.683869250383
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Part B: correct for self contamination
+Part (i)
+Number of contaminated / out of range pixels: 50
+Pixels remaining: 41729
+Part (ii)
+*** Done ***
+
+
+*** Getting spectrum ***
+*** Done ***
+
+*** Finding tau_rec for h1 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 4820.9 5656.46
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Pixels analyzed: 41779
+Number of saturated pixels: 2455
+Number of these pixels that have lower optical depth in higher order lines:
+2412
+*** Done ***
+
+Fitting continuum...
+...using 19 bins of 94.01739631578948 A
+...done
+
+*** Finding tau_rec for c4 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 6139.571315852877 7203.683869250383
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Part B: correct for self contamination
+Part (i)
+Number of contaminated / out of range pixels: 91
+Pixels remaining: 41688
+Part (ii)
+*** Done ***
+
+
+*** Getting spectrum ***
+*** Done ***
+
+*** Finding tau_rec for h1 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 4820.9 5656.46
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Pixels analyzed: 41779
+Number of saturated pixels: 2593
+Number of these pixels that have lower optical depth in higher order lines:
+2360
+*** Done ***
+
+Fitting continuum...
+...using 19 bins of 94.01739631578948 A
+...done
+
+*** Finding tau_rec for c4 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 6139.571315852877 7203.683869250383
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Part B: correct for self contamination
+Part (i)
+Number of contaminated / out of range pixels: 135
+Pixels remaining: 41644
+Part (ii)
+*** Done ***
+
+
+*** Getting spectrum ***
+*** Done ***
+
+*** Finding tau_rec for h1 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 4820.9 5656.46
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Pixels analyzed: 41779
+Number of saturated pixels: 1816
+Number of these pixels that have lower optical depth in higher order lines:
+1773
+*** Done ***
+
+Fitting continuum...
+...using 19 bins of 94.01739631578948 A
+...done
+
+*** Finding tau_rec for c4 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 6139.571315852877 7203.683869250383
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Part B: correct for self contamination
+Part (i)
+Number of contaminated / out of range pixels: 19
+Pixels remaining: 41760
+Part (ii)
+*** Done ***
+
+
+*** Getting spectrum ***
+*** Done ***
+
+*** Finding tau_rec for h1 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 4820.9 5656.46
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Pixels analyzed: 41779
+Number of saturated pixels: 2076
+Number of these pixels that have lower optical depth in higher order lines:
+2076
+*** Done ***
+
+Fitting continuum...
+...using 19 bins of 94.01739631578948 A
+...done
+
+*** Finding tau_rec for c4 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 6139.571315852877 7203.683869250383
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Part B: correct for self contamination
+Part (i)
+Number of contaminated / out of range pixels: 76
+Pixels remaining: 41703
+Part (ii)
+*** Done ***
+
+
+*** Getting spectrum ***
+*** Done ***
+
+*** Finding tau_rec for h1 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 4820.9 5656.46
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Pixels analyzed: 41779
+Number of saturated pixels: 2150
+Number of these pixels that have lower optical depth in higher order lines:
+2150
+*** Done ***
+
+Fitting continuum...
+...using 19 bins of 94.01739631578948 A
+...done
+
+*** Finding tau_rec for c4 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 6139.571315852877 7203.683869250383
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Part B: correct for self contamination
+Part (i)
+Number of contaminated / out of range pixels: 0
+Pixels remaining: 41779
+Part (ii)
+*** Done ***
+
+
+*** Getting spectrum ***
+*** Done ***
+
+*** Finding tau_rec for h1 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 4820.9 5656.46
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Pixels analyzed: 41779
+Number of saturated pixels: 1714
+Number of these pixels that have lower optical depth in higher order lines:
+1714
+*** Done ***
+
+Fitting continuum...
+...using 19 bins of 94.01739631578948 A
+...done
+
+*** Finding tau_rec for c4 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 6139.571315852877 7203.683869250383
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Part B: correct for self contamination
+Part (i)
+Number of contaminated / out of range pixels: 0
+Pixels remaining: 41779
+Part (ii)
+*** Done ***
+
+
+*** Getting spectrum ***
+*** Done ***
+
+*** Finding tau_rec for h1 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 4820.9 5656.46
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Pixels analyzed: 41779
+Number of saturated pixels: 1943
+Number of these pixels that have lower optical depth in higher order lines:
+1943
+*** Done ***
+
+Fitting continuum...
+...using 19 bins of 94.01739631578948 A
+...done
+
+*** Finding tau_rec for c4 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 6139.571315852877 7203.683869250383
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Part B: correct for self contamination
+Part (i)
+Number of contaminated / out of range pixels: 164
+Pixels remaining: 41615
+Part (ii)
+*** Done ***
+
+
+*** Getting spectrum ***
+*** Done ***
+
+*** Finding tau_rec for h1 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 4820.9 5656.46
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Pixels analyzed: 41779
+Number of saturated pixels: 1893
+Number of these pixels that have lower optical depth in higher order lines:
+1893
+*** Done ***
+
+Fitting continuum...
+...using 19 bins of 94.01739631578948 A
+...done
+
+*** Finding tau_rec for c4 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 6139.571315852877 7203.683869250383
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Part B: correct for self contamination
+Part (i)
+Number of contaminated / out of range pixels: 17
+Pixels remaining: 41762
+Part (ii)
+*** Done ***
+
+
+*** Getting spectrum ***
+*** Done ***
+
+*** Finding tau_rec for h1 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 4820.9 5656.46
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Pixels analyzed: 41779
+Number of saturated pixels: 2372
+Number of these pixels that have lower optical depth in higher order lines:
+2334
+*** Done ***
+
+Fitting continuum...
+...using 19 bins of 94.01739631578948 A
+...done
+
+*** Finding tau_rec for c4 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 6139.571315852877 7203.683869250383
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Part B: correct for self contamination
+Part (i)
+Number of contaminated / out of range pixels: 106
+Pixels remaining: 41673
+Part (ii)
+*** Done ***
+
+
+*** Getting spectrum ***
+*** Done ***
+
+*** Finding tau_rec for h1 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 4820.9 5656.46
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Pixels analyzed: 41779
+Number of saturated pixels: 1764
+Number of these pixels that have lower optical depth in higher order lines:
+1764
+*** Done ***
+
+Fitting continuum...
+...using 19 bins of 94.01739631578948 A
+...done
+
+*** Finding tau_rec for c4 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 6139.571315852877 7203.683869250383
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Part B: correct for self contamination
+Part (i)
+Number of contaminated / out of range pixels: 46
+Pixels remaining: 41733
+Part (ii)
+*** Done ***
+
+
+*** Getting spectrum ***
+*** Done ***
+
+*** Finding tau_rec for h1 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 4820.9 5656.46
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Pixels analyzed: 41779
+Number of saturated pixels: 2183
+Number of these pixels that have lower optical depth in higher order lines:
+2109
+*** Done ***
+
+Fitting continuum...
+...using 19 bins of 94.01739631578948 A
+...done
+
+*** Finding tau_rec for c4 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 6139.571315852877 7203.683869250383
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Part B: correct for self contamination
+Part (i)
+Number of contaminated / out of range pixels: 31
+Pixels remaining: 41748
+Part (ii)
+*** Done ***
+
+
+*** Getting spectrum ***
+*** Done ***
+
+*** Finding tau_rec for h1 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 4820.9 5656.46
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Pixels analyzed: 41779
+Number of saturated pixels: 1640
+Number of these pixels that have lower optical depth in higher order lines:
+1586
+*** Done ***
+
+Fitting continuum...
+...using 19 bins of 94.01739631578948 A
+...done
+
+*** Finding tau_rec for c4 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 6139.571315852877 7203.683869250383
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Part B: correct for self contamination
+Part (i)
+Number of contaminated / out of range pixels: 27
+Pixels remaining: 41752
+Part (ii)
+*** Done ***
+
+
+*** Getting spectrum ***
+*** Done ***
+
+*** Finding tau_rec for h1 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 4820.9 5656.46
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Pixels analyzed: 41779
+Number of saturated pixels: 1371
+Number of these pixels that have lower optical depth in higher order lines:
+1371
+*** Done ***
+
+Fitting continuum...
+...using 19 bins of 94.01739631578948 A
+...done
+
+*** Finding tau_rec for c4 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 6139.571315852877 7203.683869250383
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Part B: correct for self contamination
+Part (i)
+Number of contaminated / out of range pixels: 132
+Pixels remaining: 41647
+Part (ii)
+*** Done ***
+
+
+*** Getting spectrum ***
+*** Done ***
+
+*** Finding tau_rec for h1 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 4820.9 5656.46
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Pixels analyzed: 41779
+Number of saturated pixels: 1683
+Number of these pixels that have lower optical depth in higher order lines:
+1683
+*** Done ***
+
+Fitting continuum...
+...using 19 bins of 94.01739631578948 A
+...done
+
+*** Finding tau_rec for c4 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 6139.571315852877 7203.683869250383
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Part B: correct for self contamination
+Part (i)
+Number of contaminated / out of range pixels: 20
+Pixels remaining: 41759
+Part (ii)
+*** Done ***
+
+
+*** Getting spectrum ***
+*** Done ***
+
+*** Finding tau_rec for h1 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 4820.9 5656.46
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Pixels analyzed: 41779
+Number of saturated pixels: 2777
+Number of these pixels that have lower optical depth in higher order lines:
+2620
+*** Done ***
+
+Fitting continuum...
+...using 19 bins of 94.01739631578948 A
+...done
+
+*** Finding tau_rec for c4 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 6139.571315852877 7203.683869250383
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Part B: correct for self contamination
+Part (i)
+Number of contaminated / out of range pixels: 425
+Pixels remaining: 41354
+Part (ii)
+*** Done ***
+
+
+*** Getting spectrum ***
+*** Done ***
+
+*** Finding tau_rec for h1 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 4820.9 5656.46
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Pixels analyzed: 41779
+Number of saturated pixels: 1586
+Number of these pixels that have lower optical depth in higher order lines:
+1586
+*** Done ***
+
+Fitting continuum...
+...using 19 bins of 94.01739631578948 A
+...done
+
+*** Finding tau_rec for c4 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 6139.571315852877 7203.683869250383
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Part B: correct for self contamination
+Part (i)
+Number of contaminated / out of range pixels: 13
+Pixels remaining: 41766
+Part (ii)
+*** Done ***
+
+
+*** Getting spectrum ***
+*** Done ***
+
+*** Finding tau_rec for h1 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 4820.9 5656.46
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Pixels analyzed: 41779
+Number of saturated pixels: 1897
+Number of these pixels that have lower optical depth in higher order lines:
+1897
+*** Done ***
+
+Fitting continuum...
+...using 19 bins of 94.01739631578948 A
+...done
+
+*** Finding tau_rec for c4 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 6139.571315852877 7203.683869250383
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Part B: correct for self contamination
+Part (i)
+Number of contaminated / out of range pixels: 9
+Pixels remaining: 41770
+Part (ii)
+*** Done ***
+
+
+*** Getting spectrum ***
+*** Done ***
+
+*** Finding tau_rec for h1 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 4820.9 5656.46
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Pixels analyzed: 41779
+Number of saturated pixels: 2325
+Number of these pixels that have lower optical depth in higher order lines:
+2325
+*** Done ***
+
+Fitting continuum...
+...using 19 bins of 94.01739631578948 A
+...done
+
+*** Finding tau_rec for c4 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 6139.571315852877 7203.683869250383
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Part B: correct for self contamination
+Part (i)
+Number of contaminated / out of range pixels: 143
+Pixels remaining: 41636
+Part (ii)
+*** Done ***
+
+
+*** Getting spectrum ***
+*** Done ***
+
+*** Finding tau_rec for h1 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 4820.9 5656.46
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Pixels analyzed: 41779
+Number of saturated pixels: 1101
+Number of these pixels that have lower optical depth in higher order lines:
+1101
+*** Done ***
+
+Fitting continuum...
+...using 19 bins of 94.01739631578948 A
+...done
+
+*** Finding tau_rec for c4 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 6139.571315852877 7203.683869250383
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Part B: correct for self contamination
+Part (i)
+Number of contaminated / out of range pixels: 57
+Pixels remaining: 41722
+Part (ii)
+*** Done ***
+
+
+*** Getting spectrum ***
+*** Done ***
+
+*** Finding tau_rec for h1 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 4820.9 5656.46
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Pixels analyzed: 41779
+Number of saturated pixels: 1991
+Number of these pixels that have lower optical depth in higher order lines:
+1991
+*** Done ***
+
+Fitting continuum...
+...using 19 bins of 94.01739631578948 A
+...done
+
+*** Finding tau_rec for c4 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 6139.571315852877 7203.683869250383
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Part B: correct for self contamination
+Part (i)
+Number of contaminated / out of range pixels: 201
+Pixels remaining: 41578
+Part (ii)
+*** Done ***
+
+
+*** Getting spectrum ***
+*** Done ***
+
+*** Finding tau_rec for h1 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 4820.9 5656.46
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Pixels analyzed: 41779
+Number of saturated pixels: 2244
+Number of these pixels that have lower optical depth in higher order lines:
+2097
+*** Done ***
+
+Fitting continuum...
+...using 19 bins of 94.01739631578948 A
+...done
+
+*** Finding tau_rec for c4 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 6139.571315852877 7203.683869250383
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Part B: correct for self contamination
+Part (i)
+Number of contaminated / out of range pixels: 280
+Pixels remaining: 41499
+Part (ii)
+*** Done ***
+
+
+*** Getting spectrum ***
+*** Done ***
+
+*** Finding tau_rec for h1 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 4820.9 5656.46
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Pixels analyzed: 41779
+Number of saturated pixels: 2123
+Number of these pixels that have lower optical depth in higher order lines:
+2056
+*** Done ***
+
+Fitting continuum...
+...using 19 bins of 94.01739631578948 A
+...done
+
+*** Finding tau_rec for c4 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 6139.571315852877 7203.683869250383
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Part B: correct for self contamination
+Part (i)
+Number of contaminated / out of range pixels: 278
+Pixels remaining: 41501
+Part (ii)
+*** Done ***
+
+
+*** Getting spectrum ***
+*** Done ***
+
+*** Finding tau_rec for h1 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 4820.9 5656.46
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Pixels analyzed: 41779
+Number of saturated pixels: 1665
+Number of these pixels that have lower optical depth in higher order lines:
+1665
+*** Done ***
+
+Fitting continuum...
+...using 19 bins of 94.01739631578948 A
+...done
+
+*** Finding tau_rec for c4 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 6139.571315852877 7203.683869250383
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Part B: correct for self contamination
+Part (i)
+Number of contaminated / out of range pixels: 5
+Pixels remaining: 41774
+Part (ii)
+*** Done ***
+
+
+*** Getting spectrum ***
+*** Done ***
+
+*** Finding tau_rec for h1 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 4820.9 5656.46
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Pixels analyzed: 41779
+Number of saturated pixels: 1426
+Number of these pixels that have lower optical depth in higher order lines:
+1426
+*** Done ***
+
+Fitting continuum...
+...using 19 bins of 94.01739631578948 A
+...done
+
+*** Finding tau_rec for c4 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 6139.571315852877 7203.683869250383
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Part B: correct for self contamination
+Part (i)
+Number of contaminated / out of range pixels: 8
+Pixels remaining: 41771
+Part (ii)
+*** Done ***
+
+
+*** Getting spectrum ***
+*** Done ***
+
+*** Finding tau_rec for h1 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 4820.9 5656.46
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Pixels analyzed: 41779
+Number of saturated pixels: 1144
+Number of these pixels that have lower optical depth in higher order lines:
+1144
+*** Done ***
+
+Fitting continuum...
+...using 19 bins of 94.01739631578948 A
+...done
+
+*** Finding tau_rec for c4 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 6139.571315852877 7203.683869250383
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Part B: correct for self contamination
+Part (i)
+Number of contaminated / out of range pixels: 114
+Pixels remaining: 41665
+Part (ii)
+*** Done ***
+
+
+*** Getting spectrum ***
+*** Done ***
+
+*** Finding tau_rec for h1 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 4820.9 5656.46
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Pixels analyzed: 41779
+Number of saturated pixels: 1368
+Number of these pixels that have lower optical depth in higher order lines:
+1368
+*** Done ***
+
+Fitting continuum...
+...using 19 bins of 94.01739631578948 A
+...done
+
+*** Finding tau_rec for c4 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 6139.571315852877 7203.683869250383
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Part B: correct for self contamination
+Part (i)
+Number of contaminated / out of range pixels: 139
+Pixels remaining: 41640
+Part (ii)
+*** Done ***
+
+
+*** Getting spectrum ***
+*** Done ***
+
+*** Finding tau_rec for h1 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 4820.9 5656.46
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Pixels analyzed: 41779
+Number of saturated pixels: 1330
+Number of these pixels that have lower optical depth in higher order lines:
+1276
+*** Done ***
+
+Fitting continuum...
+...using 19 bins of 94.01739631578948 A
+...done
+
+*** Finding tau_rec for c4 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 6139.571315852877 7203.683869250383
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Part B: correct for self contamination
+Part (i)
+Number of contaminated / out of range pixels: 5
+Pixels remaining: 41774
+Part (ii)
+*** Done ***
+
+
+*** Getting spectrum ***
+*** Done ***
+
+*** Finding tau_rec for h1 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 4820.9 5656.46
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Pixels analyzed: 41779
+Number of saturated pixels: 1867
+Number of these pixels that have lower optical depth in higher order lines:
+1825
+*** Done ***
+
+Fitting continuum...
+...using 19 bins of 94.01739631578948 A
+...done
+
+*** Finding tau_rec for c4 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 6139.571315852877 7203.683869250383
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Part B: correct for self contamination
+Part (i)
+Number of contaminated / out of range pixels: 123
+Pixels remaining: 41656
+Part (ii)
+*** Done ***
+
+
+*** Getting spectrum ***
+*** Done ***
+
+*** Finding tau_rec for h1 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 4820.9 5656.46
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Pixels analyzed: 41779
+Number of saturated pixels: 1981
+Number of these pixels that have lower optical depth in higher order lines:
+1981
+*** Done ***
+
+Fitting continuum...
+...using 19 bins of 94.01739631578948 A
+...done
+
+*** Finding tau_rec for c4 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 6139.571315852877 7203.683869250383
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Part B: correct for self contamination
+Part (i)
+Number of contaminated / out of range pixels: 0
+Pixels remaining: 41779
+Part (ii)
+*** Done ***
+
+
+*** Getting spectrum ***
+*** Done ***
+
+*** Finding tau_rec for h1 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 4820.9 5656.46
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Pixels analyzed: 41779
+Number of saturated pixels: 1405
+Number of these pixels that have lower optical depth in higher order lines:
+1405
+*** Done ***
+
+Fitting continuum...
+...using 19 bins of 94.01739631578948 A
+...done
+
+*** Finding tau_rec for c4 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 6139.571315852877 7203.683869250383
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Part B: correct for self contamination
+Part (i)
+Number of contaminated / out of range pixels: 37
+Pixels remaining: 41742
+Part (ii)
+*** Done ***
+
+
+*** Getting spectrum ***
+*** Done ***
+
+*** Finding tau_rec for h1 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 4820.9 5656.46
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Pixels analyzed: 41779
+Number of saturated pixels: 2481
+Number of these pixels that have lower optical depth in higher order lines:
+2404
+*** Done ***
+
+Fitting continuum...
+...using 19 bins of 94.01739631578948 A
+...done
+
+*** Finding tau_rec for c4 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 6139.571315852877 7203.683869250383
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Part B: correct for self contamination
+Part (i)
+Number of contaminated / out of range pixels: 82
+Pixels remaining: 41697
+Part (ii)
+*** Done ***
+
+
+*** Getting spectrum ***
+*** Done ***
+
+*** Finding tau_rec for h1 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 4820.9 5656.46
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Pixels analyzed: 41779
+Number of saturated pixels: 2042
+Number of these pixels that have lower optical depth in higher order lines:
+2042
+*** Done ***
+
+Fitting continuum...
+...using 19 bins of 94.01739631578948 A
+...done
+
+*** Finding tau_rec for c4 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 6139.571315852877 7203.683869250383
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Part B: correct for self contamination
+Part (i)
+Number of contaminated / out of range pixels: 288
+Pixels remaining: 41491
+Part (ii)
+*** Done ***
+
+
+*** Getting spectrum ***
+*** Done ***
+
+*** Finding tau_rec for h1 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 4820.9 5656.46
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Pixels analyzed: 41779
+Number of saturated pixels: 2101
+Number of these pixels that have lower optical depth in higher order lines:
+2101
+*** Done ***
+
+Fitting continuum...
+...using 19 bins of 94.01739631578948 A
+...done
+
+*** Finding tau_rec for c4 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 6139.571315852877 7203.683869250383
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Part B: correct for self contamination
+Part (i)
+Number of contaminated / out of range pixels: 68
+Pixels remaining: 41711
+Part (ii)
+*** Done ***
+
+
+*** Getting spectrum ***
+*** Done ***
+
+*** Finding tau_rec for h1 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 4820.9 5656.46
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Pixels analyzed: 41779
+Number of saturated pixels: 1890
+Number of these pixels that have lower optical depth in higher order lines:
+1870
+*** Done ***
+
+Fitting continuum...
+...using 19 bins of 94.01739631578948 A
+...done
+
+*** Finding tau_rec for c4 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 6139.571315852877 7203.683869250383
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Part B: correct for self contamination
+Part (i)
+Number of contaminated / out of range pixels: 20
+Pixels remaining: 41759
+Part (ii)
+*** Done ***
+
+
+*** Getting spectrum ***
+*** Done ***
+
+*** Finding tau_rec for h1 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 4820.9 5656.46
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Pixels analyzed: 41779
+Number of saturated pixels: 2183
+Number of these pixels that have lower optical depth in higher order lines:
+2137
+*** Done ***
+
+Fitting continuum...
+...using 19 bins of 94.01739631578948 A
+...done
+
+*** Finding tau_rec for c4 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 6139.571315852877 7203.683869250383
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Part B: correct for self contamination
+Part (i)
+Number of contaminated / out of range pixels: 27
+Pixels remaining: 41752
+Part (ii)
+*** Done ***
+
+
+*** Getting spectrum ***
+*** Done ***
+
+*** Finding tau_rec for h1 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 4820.9 5656.46
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Pixels analyzed: 41779
+Number of saturated pixels: 1406
+Number of these pixels that have lower optical depth in higher order lines:
+1406
+*** Done ***
+
+Fitting continuum...
+...using 19 bins of 94.01739631578948 A
+...done
+
+*** Finding tau_rec for c4 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 6139.571315852877 7203.683869250383
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Part B: correct for self contamination
+Part (i)
+Number of contaminated / out of range pixels: 42
+Pixels remaining: 41737
+Part (ii)
+*** Done ***
+
+
+*** Getting spectrum ***
+*** Done ***
+
+*** Finding tau_rec for h1 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 4820.9 5656.46
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Pixels analyzed: 41779
+Number of saturated pixels: 2088
+Number of these pixels that have lower optical depth in higher order lines:
+2079
+*** Done ***
+
+Fitting continuum...
+...using 19 bins of 94.01739631578948 A
+...done
+
+*** Finding tau_rec for c4 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 6139.571315852877 7203.683869250383
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Part B: correct for self contamination
+Part (i)
+Number of contaminated / out of range pixels: 68
+Pixels remaining: 41711
+Part (ii)
+*** Done ***
+
+
+*** Getting spectrum ***
+*** Done ***
+
+*** Finding tau_rec for h1 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 4820.9 5656.46
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Pixels analyzed: 41779
+Number of saturated pixels: 1857
+Number of these pixels that have lower optical depth in higher order lines:
+1857
+*** Done ***
+
+Fitting continuum...
+...using 19 bins of 94.01739631578948 A
+...done
+
+*** Finding tau_rec for c4 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 6139.571315852877 7203.683869250383
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Part B: correct for self contamination
+Part (i)
+Number of contaminated / out of range pixels: 25
+Pixels remaining: 41754
+Part (ii)
+*** Done ***
+
+
+*** Getting spectrum ***
+*** Done ***
+
+*** Finding tau_rec for h1 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 4820.9 5656.46
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Pixels analyzed: 41779
+Number of saturated pixels: 1917
+Number of these pixels that have lower optical depth in higher order lines:
+1885
+*** Done ***
+
+Fitting continuum...
+...using 19 bins of 94.01739631578948 A
+...done
+
+*** Finding tau_rec for c4 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 6139.571315852877 7203.683869250383
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Part B: correct for self contamination
+Part (i)
+Number of contaminated / out of range pixels: 210
+Pixels remaining: 41569
+Part (ii)
+*** Done ***
+
+
+*** Getting spectrum ***
+*** Done ***
+
+*** Finding tau_rec for h1 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 4820.9 5656.46
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Pixels analyzed: 41779
+Number of saturated pixels: 1697
+Number of these pixels that have lower optical depth in higher order lines:
+1697
+*** Done ***
+
+Fitting continuum...
+...using 19 bins of 94.01739631578948 A
+...done
+
+*** Finding tau_rec for c4 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 6139.571315852877 7203.683869250383
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Part B: correct for self contamination
+Part (i)
+Number of contaminated / out of range pixels: 53
+Pixels remaining: 41726
+Part (ii)
+*** Done ***
+
+
+*** Getting spectrum ***
+*** Done ***
+
+*** Finding tau_rec for h1 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 4820.9 5656.46
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Pixels analyzed: 41779
+Number of saturated pixels: 1600
+Number of these pixels that have lower optical depth in higher order lines:
+1559
+*** Done ***
+
+Fitting continuum...
+...using 19 bins of 94.01739631578948 A
+...done
+
+*** Finding tau_rec for c4 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 6139.571315852877 7203.683869250383
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Part B: correct for self contamination
+Part (i)
+Number of contaminated / out of range pixels: 124
+Pixels remaining: 41655
+Part (ii)
+*** Done ***
+
+
+*** Getting spectrum ***
+*** Done ***
+
+*** Finding tau_rec for h1 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 4820.9 5656.46
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Pixels analyzed: 41779
+Number of saturated pixels: 1658
+Number of these pixels that have lower optical depth in higher order lines:
+1658
+*** Done ***
+
+Fitting continuum...
+...using 19 bins of 94.01739631578948 A
+...done
+
+*** Finding tau_rec for c4 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 6139.571315852877 7203.683869250383
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Part B: correct for self contamination
+Part (i)
+Number of contaminated / out of range pixels: 27
+Pixels remaining: 41752
+Part (ii)
+*** Done ***
+
+
+*** Getting spectrum ***
+*** Done ***
+
+*** Finding tau_rec for h1 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 4820.9 5656.46
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Pixels analyzed: 41779
+Number of saturated pixels: 1276
+Number of these pixels that have lower optical depth in higher order lines:
+1276
+*** Done ***
+
+Fitting continuum...
+...using 19 bins of 94.01739631578948 A
+...done
+
+*** Finding tau_rec for c4 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 6139.571315852877 7203.683869250383
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Part B: correct for self contamination
+Part (i)
+Number of contaminated / out of range pixels: 232
+Pixels remaining: 41547
+Part (ii)
+*** Done ***
+
+
+*** Getting spectrum ***
+*** Done ***
+
+*** Finding tau_rec for h1 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 4820.9 5656.46
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Pixels analyzed: 41779
+Number of saturated pixels: 1778
+Number of these pixels that have lower optical depth in higher order lines:
+1754
+*** Done ***
+
+Fitting continuum...
+...using 19 bins of 94.01739631578948 A
+...done
+
+*** Finding tau_rec for c4 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 6139.571315852877 7203.683869250383
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Part B: correct for self contamination
+Part (i)
+Number of contaminated / out of range pixels: 230
+Pixels remaining: 41549
+Part (ii)
+*** Done ***
+
+
+*** Getting spectrum ***
+*** Done ***
+
+*** Finding tau_rec for h1 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 4820.9 5656.46
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Pixels analyzed: 41779
+Number of saturated pixels: 1337
+Number of these pixels that have lower optical depth in higher order lines:
+1337
+*** Done ***
+
+Fitting continuum...
+...using 19 bins of 94.01739631578948 A
+...done
+
+*** Finding tau_rec for c4 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 6139.571315852877 7203.683869250383
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Part B: correct for self contamination
+Part (i)
+Number of contaminated / out of range pixels: 5
+Pixels remaining: 41774
+Part (ii)
+*** Done ***
+
+
+*** Getting spectrum ***
+*** Done ***
+
+*** Finding tau_rec for h1 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 4820.9 5656.46
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Pixels analyzed: 41779
+Number of saturated pixels: 2966
+Number of these pixels that have lower optical depth in higher order lines:
+2923
+*** Done ***
+
+Fitting continuum...
+...using 19 bins of 94.01739631578948 A
+...done
+
+*** Finding tau_rec for c4 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 6139.571315852877 7203.683869250383
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Part B: correct for self contamination
+Part (i)
+Number of contaminated / out of range pixels: 19
+Pixels remaining: 41760
+Part (ii)
+*** Done ***
+
+
+*** Getting spectrum ***
+*** Done ***
+
+*** Finding tau_rec for h1 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 4820.9 5656.46
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Pixels analyzed: 41779
+Number of saturated pixels: 2118
+Number of these pixels that have lower optical depth in higher order lines:
+1928
+*** Done ***
+
+Fitting continuum...
+...using 19 bins of 94.01739631578948 A
+...done
+
+*** Finding tau_rec for c4 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 6139.571315852877 7203.683869250383
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Part B: correct for self contamination
+Part (i)
+Number of contaminated / out of range pixels: 750
+Pixels remaining: 41029
+Part (ii)
+*** Done ***
+
+
+*** Getting spectrum ***
+*** Done ***
+
+*** Finding tau_rec for h1 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 4820.9 5656.46
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Pixels analyzed: 41779
+Number of saturated pixels: 2390
+Number of these pixels that have lower optical depth in higher order lines:
+2390
+*** Done ***
+
+Fitting continuum...
+...using 19 bins of 94.01739631578948 A
+...done
+
+*** Finding tau_rec for c4 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 6139.571315852877 7203.683869250383
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Part B: correct for self contamination
+Part (i)
+Number of contaminated / out of range pixels: 0
+Pixels remaining: 41779
+Part (ii)
+*** Done ***
+
+
+*** Getting spectrum ***
+*** Done ***
+
+*** Finding tau_rec for h1 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 4820.9 5656.46
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Pixels analyzed: 41779
+Number of saturated pixels: 2061
+Number of these pixels that have lower optical depth in higher order lines:
+2019
+*** Done ***
+
+Fitting continuum...
+...using 19 bins of 94.01739631578948 A
+...done
+
+*** Finding tau_rec for c4 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 6139.571315852877 7203.683869250383
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Part B: correct for self contamination
+Part (i)
+Number of contaminated / out of range pixels: 3
+Pixels remaining: 41776
+Part (ii)
+*** Done ***
+
+
+*** Getting spectrum ***
+*** Done ***
+
+*** Finding tau_rec for h1 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 4820.9 5656.46
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Pixels analyzed: 41779
+Number of saturated pixels: 1964
+Number of these pixels that have lower optical depth in higher order lines:
+1937
+*** Done ***
+
+Fitting continuum...
+...using 19 bins of 94.01739631578948 A
+...done
+
+*** Finding tau_rec for c4 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 6139.571315852877 7203.683869250383
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Part B: correct for self contamination
+Part (i)
+Number of contaminated / out of range pixels: 252
+Pixels remaining: 41527
+Part (ii)
+*** Done ***
+
+
+*** Getting spectrum ***
+*** Done ***
+
+*** Finding tau_rec for h1 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 4820.9 5656.46
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Pixels analyzed: 41779
+Number of saturated pixels: 1859
+Number of these pixels that have lower optical depth in higher order lines:
+1859
+*** Done ***
+
+Fitting continuum...
+...using 19 bins of 94.01739631578948 A
+...done
+
+*** Finding tau_rec for c4 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 6139.571315852877 7203.683869250383
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Part B: correct for self contamination
+Part (i)
+Number of contaminated / out of range pixels: 9
+Pixels remaining: 41770
+Part (ii)
+*** Done ***
+
+
+*** Getting spectrum ***
+*** Done ***
+
+*** Finding tau_rec for h1 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 4820.9 5656.46
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Pixels analyzed: 41779
+Number of saturated pixels: 1567
+Number of these pixels that have lower optical depth in higher order lines:
+1567
+*** Done ***
+
+Fitting continuum...
+...using 19 bins of 94.01739631578948 A
+...done
+
+*** Finding tau_rec for c4 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 6139.571315852877 7203.683869250383
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Part B: correct for self contamination
+Part (i)
+Number of contaminated / out of range pixels: 47
+Pixels remaining: 41732
+Part (ii)
+*** Done ***
+
+
+*** Getting spectrum ***
+*** Done ***
+
+*** Finding tau_rec for h1 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 4820.9 5656.46
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Pixels analyzed: 41779
+Number of saturated pixels: 1684
+Number of these pixels that have lower optical depth in higher order lines:
+1684
+*** Done ***
+
+Fitting continuum...
+...using 19 bins of 94.01739631578948 A
+...done
+
+*** Finding tau_rec for c4 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 6139.571315852877 7203.683869250383
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Part B: correct for self contamination
+Part (i)
+Number of contaminated / out of range pixels: 49
+Pixels remaining: 41730
+Part (ii)
+*** Done ***
+
+
+*** Getting spectrum ***
+*** Done ***
+
+*** Finding tau_rec for h1 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 4820.9 5656.46
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Pixels analyzed: 41779
+Number of saturated pixels: 1948
+Number of these pixels that have lower optical depth in higher order lines:
+1948
+*** Done ***
+
+Fitting continuum...
+...using 19 bins of 94.01739631578948 A
+...done
+
+*** Finding tau_rec for c4 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 6139.571315852877 7203.683869250383
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Part B: correct for self contamination
+Part (i)
+Number of contaminated / out of range pixels: 46
+Pixels remaining: 41733
+Part (ii)
+*** Done ***
+
+
+*** Getting spectrum ***
+*** Done ***
+
+*** Finding tau_rec for h1 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 4820.9 5656.46
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Pixels analyzed: 41779
+Number of saturated pixels: 2417
+Number of these pixels that have lower optical depth in higher order lines:
+2417
+*** Done ***
+
+Fitting continuum...
+...using 19 bins of 94.01739631578948 A
+...done
+
+*** Finding tau_rec for c4 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 6139.571315852877 7203.683869250383
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Part B: correct for self contamination
+Part (i)
+Number of contaminated / out of range pixels: 131
+Pixels remaining: 41648
+Part (ii)
+*** Done ***
+
+
+*** Getting spectrum ***
+*** Done ***
+
+*** Finding tau_rec for h1 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 4820.9 5656.46
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Pixels analyzed: 41779
+Number of saturated pixels: 1648
+Number of these pixels that have lower optical depth in higher order lines:
+1648
+*** Done ***
+
+Fitting continuum...
+...using 19 bins of 94.01739631578948 A
+...done
+
+*** Finding tau_rec for c4 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 6139.571315852877 7203.683869250383
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Part B: correct for self contamination
+Part (i)
+Number of contaminated / out of range pixels: 95
+Pixels remaining: 41684
+Part (ii)
+*** Done ***
+
+
+*** Getting spectrum ***
+*** Done ***
+
+*** Finding tau_rec for h1 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 4820.9 5656.46
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Pixels analyzed: 41779
+Number of saturated pixels: 2205
+Number of these pixels that have lower optical depth in higher order lines:
+2205
+*** Done ***
+
+Fitting continuum...
+...using 19 bins of 94.01739631578948 A
+...done
+
+*** Finding tau_rec for c4 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 6139.571315852877 7203.683869250383
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Part B: correct for self contamination
+Part (i)
+Number of contaminated / out of range pixels: 56
+Pixels remaining: 41723
+Part (ii)
+*** Done ***
+
+
+*** Getting spectrum ***
+*** Done ***
+
+*** Finding tau_rec for h1 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 4820.9 5656.46
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Pixels analyzed: 41779
+Number of saturated pixels: 2100
+Number of these pixels that have lower optical depth in higher order lines:
+2100
+*** Done ***
+
+Fitting continuum...
+...using 19 bins of 94.01739631578948 A
+...done
+
+*** Finding tau_rec for c4 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 6139.571315852877 7203.683869250383
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Part B: correct for self contamination
+Part (i)
+Number of contaminated / out of range pixels: 233
+Pixels remaining: 41546
+Part (ii)
+*** Done ***
+
+
+*** Getting spectrum ***
+*** Done ***
+
+*** Finding tau_rec for h1 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 4820.9 5656.46
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Pixels analyzed: 41779
+Number of saturated pixels: 1864
+Number of these pixels that have lower optical depth in higher order lines:
+1864
+*** Done ***
+
+Fitting continuum...
+...using 19 bins of 94.01739631578948 A
+...done
+
+*** Finding tau_rec for c4 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 6139.571315852877 7203.683869250383
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Part B: correct for self contamination
+Part (i)
+Number of contaminated / out of range pixels: 76
+Pixels remaining: 41703
+Part (ii)
+*** Done ***
+
+
+*** Getting spectrum ***
+*** Done ***
+
+*** Finding tau_rec for h1 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 4820.9 5656.46
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Pixels analyzed: 41779
+Number of saturated pixels: 2599
+Number of these pixels that have lower optical depth in higher order lines:
+2491
+*** Done ***
+
+Fitting continuum...
+...using 19 bins of 94.01739631578948 A
+...done
+
+*** Finding tau_rec for c4 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 6139.571315852877 7203.683869250383
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Part B: correct for self contamination
+Part (i)
+Number of contaminated / out of range pixels: 175
+Pixels remaining: 41604
+Part (ii)
+*** Done ***
+
+
+*** Getting spectrum ***
+*** Done ***
+
+*** Finding tau_rec for h1 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 4820.9 5656.46
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Pixels analyzed: 41779
+Number of saturated pixels: 1804
+Number of these pixels that have lower optical depth in higher order lines:
+1804
+*** Done ***
+
+Fitting continuum...
+...using 19 bins of 94.01739631578948 A
+...done
+
+*** Finding tau_rec for c4 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 6139.571315852877 7203.683869250383
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Part B: correct for self contamination
+Part (i)
+Number of contaminated / out of range pixels: 50
+Pixels remaining: 41729
+Part (ii)
+*** Done ***
+
+
+*** Getting spectrum ***
+*** Done ***
+
+*** Finding tau_rec for h1 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 4820.9 5656.46
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Pixels analyzed: 41779
+Number of saturated pixels: 1675
+Number of these pixels that have lower optical depth in higher order lines:
+1675
+*** Done ***
+
+Fitting continuum...
+...using 19 bins of 94.01739631578948 A
+...done
+
+*** Finding tau_rec for c4 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 6139.571315852877 7203.683869250383
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Part B: correct for self contamination
+Part (i)
+Number of contaminated / out of range pixels: 149
+Pixels remaining: 41630
+Part (ii)
+*** Done ***
+
+
+*** Getting spectrum ***
+*** Done ***
+
+*** Finding tau_rec for h1 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 4820.9 5656.46
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Pixels analyzed: 41779
+Number of saturated pixels: 2012
+Number of these pixels that have lower optical depth in higher order lines:
+1941
+*** Done ***
+
+Fitting continuum...
+...using 19 bins of 94.01739631578948 A
+...done
+
+*** Finding tau_rec for c4 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 6139.571315852877 7203.683869250383
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Part B: correct for self contamination
+Part (i)
+Number of contaminated / out of range pixels: 63
+Pixels remaining: 41716
+Part (ii)
+*** Done ***
+
+
+*** Getting spectrum ***
+*** Done ***
+
+*** Finding tau_rec for h1 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 4820.9 5656.46
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Pixels analyzed: 41779
+Number of saturated pixels: 1841
+Number of these pixels that have lower optical depth in higher order lines:
+1841
+*** Done ***
+
+Fitting continuum...
+...using 19 bins of 94.01739631578948 A
+...done
+
+*** Finding tau_rec for c4 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 6139.571315852877 7203.683869250383
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Part B: correct for self contamination
+Part (i)
+Number of contaminated / out of range pixels: 74
+Pixels remaining: 41705
+Part (ii)
+*** Done ***
+
+
+*** Getting spectrum ***
+*** Done ***
+
+*** Finding tau_rec for h1 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 4820.9 5656.46
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Pixels analyzed: 41779
+Number of saturated pixels: 1511
+Number of these pixels that have lower optical depth in higher order lines:
+1511
+*** Done ***
+
+Fitting continuum...
+...using 19 bins of 94.01739631578948 A
+...done
+
+*** Finding tau_rec for c4 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 6139.571315852877 7203.683869250383
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Part B: correct for self contamination
+Part (i)
+Number of contaminated / out of range pixels: 0
+Pixels remaining: 41779
+Part (ii)
+*** Done ***
+
+
+*** Getting spectrum ***
+*** Done ***
+
+*** Finding tau_rec for h1 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 4820.9 5656.46
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Pixels analyzed: 41779
+Number of saturated pixels: 2126
+Number of these pixels that have lower optical depth in higher order lines:
+2037
+*** Done ***
+
+Fitting continuum...
+...using 19 bins of 94.01739631578948 A
+...done
+
+*** Finding tau_rec for c4 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 6139.571315852877 7203.683869250383
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Part B: correct for self contamination
+Part (i)
+Number of contaminated / out of range pixels: 214
+Pixels remaining: 41565
+Part (ii)
+*** Done ***
+
+
+*** Getting spectrum ***
+*** Done ***
+
+*** Finding tau_rec for h1 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 4820.9 5656.46
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Pixels analyzed: 41779
+Number of saturated pixels: 1756
+Number of these pixels that have lower optical depth in higher order lines:
+1756
+*** Done ***
+
+Fitting continuum...
+...using 19 bins of 94.01739631578948 A
+...done
+
+*** Finding tau_rec for c4 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 6139.571315852877 7203.683869250383
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Part B: correct for self contamination
+Part (i)
+Number of contaminated / out of range pixels: 226
+Pixels remaining: 41553
+Part (ii)
+*** Done ***
+
+
+*** Getting spectrum ***
+*** Done ***
+
+*** Finding tau_rec for h1 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 4820.9 5656.46
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Pixels analyzed: 41779
+Number of saturated pixels: 2397
+Number of these pixels that have lower optical depth in higher order lines:
+2397
+*** Done ***
+
+Fitting continuum...
+...using 19 bins of 94.01739631578948 A
+...done
+
+*** Finding tau_rec for c4 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 6139.571315852877 7203.683869250383
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Part B: correct for self contamination
+Part (i)
+Number of contaminated / out of range pixels: 197
+Pixels remaining: 41582
+Part (ii)
+*** Done ***
+
+
+*** Getting spectrum ***
+*** Done ***
+
+*** Finding tau_rec for h1 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 4820.9 5656.46
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Pixels analyzed: 41779
+Number of saturated pixels: 1989
+Number of these pixels that have lower optical depth in higher order lines:
+1965
+*** Done ***
+
+Fitting continuum...
+...using 19 bins of 94.01739631578948 A
+...done
+
+*** Finding tau_rec for c4 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 6139.571315852877 7203.683869250383
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Part B: correct for self contamination
+Part (i)
+Number of contaminated / out of range pixels: 140
+Pixels remaining: 41639
+Part (ii)
+*** Done ***
+
+
+*** Getting spectrum ***
+*** Done ***
+
+*** Finding tau_rec for h1 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 4820.9 5656.46
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Pixels analyzed: 41779
+Number of saturated pixels: 1575
+Number of these pixels that have lower optical depth in higher order lines:
+1502
+*** Done ***
+
+Fitting continuum...
+...using 19 bins of 94.01739631578948 A
+...done
+
+*** Finding tau_rec for c4 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 6139.571315852877 7203.683869250383
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Part B: correct for self contamination
+Part (i)
+Number of contaminated / out of range pixels: 68
+Pixels remaining: 41711
+Part (ii)
+*** Done ***
+
+
+*** Getting spectrum ***
+*** Done ***
+
+*** Finding tau_rec for h1 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 4820.9 5656.46
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Pixels analyzed: 41779
+Number of saturated pixels: 2146
+Number of these pixels that have lower optical depth in higher order lines:
+2102
+*** Done ***
+
+Fitting continuum...
+...using 19 bins of 94.01739631578948 A
+...done
+
+*** Finding tau_rec for c4 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 6139.571315852877 7203.683869250383
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Part B: correct for self contamination
+Part (i)
+Number of contaminated / out of range pixels: 74
+Pixels remaining: 41705
+Part (ii)
+*** Done ***
+
+
+*** Getting spectrum ***
+*** Done ***
+
+*** Finding tau_rec for h1 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 4820.9 5656.46
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Pixels analyzed: 41779
+Number of saturated pixels: 1758
+Number of these pixels that have lower optical depth in higher order lines:
+1758
+*** Done ***
+
+Fitting continuum...
+...using 19 bins of 94.01739631578948 A
+...done
+
+*** Finding tau_rec for c4 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 6139.571315852877 7203.683869250383
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Part B: correct for self contamination
+Part (i)
+Number of contaminated / out of range pixels: 40
+Pixels remaining: 41739
+Part (ii)
+*** Done ***
+
+
+*** Getting spectrum ***
+*** Done ***
+
+*** Finding tau_rec for h1 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 4820.9 5656.46
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Pixels analyzed: 41779
+Number of saturated pixels: 2345
+Number of these pixels that have lower optical depth in higher order lines:
+2345
+*** Done ***
+
+Fitting continuum...
+...using 19 bins of 94.01739631578948 A
+...done
+
+*** Finding tau_rec for c4 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 6139.571315852877 7203.683869250383
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Part B: correct for self contamination
+Part (i)
+Number of contaminated / out of range pixels: 25
+Pixels remaining: 41754
+Part (ii)
+*** Done ***
+
+
+*** Getting spectrum ***
+*** Done ***
+
+*** Finding tau_rec for h1 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 4820.9 5656.46
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Pixels analyzed: 41779
+Number of saturated pixels: 1910
+Number of these pixels that have lower optical depth in higher order lines:
+1860
+*** Done ***
+
+Fitting continuum...
+...using 19 bins of 94.01739631578948 A
+...done
+
+*** Finding tau_rec for c4 ***
+z range: 2.96563179434947 3.652956422963763
+lambda range: 6139.571315852877 7203.683869250383
+Total number of pixels: 41779
+After removing bad pixels from spectrum: 41779
+Part B: correct for self contamination
+Part (i)
+Number of contaminated / out of range pixels: 76
+Pixels remaining: 41703
+Part (ii)
+*** Done ***
+
+*** Binning optical depths ***
+Binning h1 vs. c4
+Number of good pixels: 41722
+Calculating 50 th percentiles
+--<< DEBG >>--  Doing bin index 0.
+/users/aricrowe/.local/share/hatch/env/virtual/podpy-refocused/px_3gr4w/podpy-refocused/lib/python3.11/site-packages/numpy/core/fromnumeric.py:3504: RuntimeWarning: Mean of empty slice.
+  return _methods._mean(a, axis=axis, dtype=dtype,
+/users/aricrowe/.local/share/hatch/env/virtual/podpy-refocused/px_3gr4w/podpy-refocused/lib/python3.11/site-packages/numpy/core/_methods.py:129: RuntimeWarning: invalid value encountered in scalar divide
+  ret = ret.dtype.type(ret / rcount)
+--<< DEBG >>--  Doing bin index 1.
+--<< DEBG >>--  Doing bin index 2.
+--<< DEBG >>--  Doing bin index 3.
+--<< DEBG >>--  Doing bin index 4.
+--<< DEBG >>--  Doing bin index 5.
+--<< DEBG >>--  Doing bin index 6.
+--<< DEBG >>--  Doing bin index 7.
+--<< DEBG >>--  Doing bin index 8.
+--<< DEBG >>--  Doing bin index 9.
+--<< DEBG >>--  Doing bin index 10.
+--<< DEBG >>--  Doing bin index 11.
+--<< DEBG >>--  Doing bin index 12.
+--<< DEBG >>--  Doing bin index 13.
+--<< DEBG >>--  Doing bin index 14.
+--<< DEBG >>--  Doing bin index 15.
+--<< DEBG >>--  Doing bin index 16.
+--<< DEBG >>--  Doing bin index 17.
+--<< DEBG >>--  Doing bin index 18.
+--<< DEBG >>--  Doing bin index 19.
+--<< DEBG >>--  Doing bin index 20.
+--<< DEBG >>--  Doing bin index 21.
+--<< DEBG >>--  Doing bin index 22.
+--<< DEBG >>--  Doing bin index 23.
+--<< DEBG >>--  Doing bin index 24.
+--<< DEBG >>--  Doing bin index 25.
+--<< DEBG >>--  Doing bin index 26.
+--<< DEBG >>--  Doing bin index 27.
+--<< DEBG >>--  Doing bin index 28.
+--<< DEBG >>--  Doing bin index 29.
+--<< DEBG >>--  Doing bin index 30.
+--<< DEBG >>--  Doing bin index 31.
+--<< DEBG >>--  Doing bin index 32.
+--<< DEBG >>--  Doing bin index 33.
+--<< DEBG >>--  Doing bin index 34.
+--<< DEBG >>--  Doing bin index 35.
+--<< DEBG >>--  Doing bin index 36.
+--<< DEBG >>--  Doing bin index 37.
+--<< DEBG >>--  Doing bin index 38.
+*** Binning optical depths ***
+Binning h1 vs. c4
+Number of good pixels: 41722
+Calculating 50 th percentiles
+--<< DEBG >>--  Doing bin index 0.
+--<< DEBG >>--  Doing bin index 1.
+--<< DEBG >>--  Doing bin index 2.
+--<< DEBG >>--  Doing bin index 3.
+--<< DEBG >>--  Doing bin index 4.
+--<< DEBG >>--  Doing bin index 5.
+--<< DEBG >>--  Doing bin index 6.
+--<< DEBG >>--  Doing bin index 7.
+--<< DEBG >>--  Doing bin index 8.
+--<< DEBG >>--  Doing bin index 9.
+--<< DEBG >>--  Doing bin index 10.
+--<< DEBG >>--  Doing bin index 11.
+--<< DEBG >>--  Doing bin index 12.
+--<< DEBG >>--  Doing bin index 13.
+--<< DEBG >>--  Doing bin index 14.
+--<< DEBG >>--  Doing bin index 15.
+--<< DEBG >>--  Doing bin index 16.
+--<< DEBG >>--  Doing bin index 17.
+--<< DEBG >>--  Doing bin index 18.
+--<< DEBG >>--  Doing bin index 19.
+--<< DEBG >>--  Doing bin index 20.
+--<< DEBG >>--  Doing bin index 21.
+--<< DEBG >>--  Doing bin index 22.
+--<< DEBG >>--  Doing bin index 23.
+--<< DEBG >>--  Doing bin index 24.
+--<< DEBG >>--  Doing bin index 25.
+--<< DEBG >>--  Doing bin index 26.
+--<< DEBG >>--  Doing bin index 27.
+--<< DEBG >>--  Doing bin index 28.
+--<< DEBG >>--  Doing bin index 29.
+--<< DEBG >>--  Doing bin index 30.
+--<< DEBG >>--  Doing bin index 31.
+--<< DEBG >>--  Doing bin index 32.
+--<< DEBG >>--  Doing bin index 33.
+--<< DEBG >>--  Doing bin index 34.
+--<< DEBG >>--  Doing bin index 35.
+--<< DEBG >>--  Doing bin index 36.
+--<< DEBG >>--  Doing bin index 37.
+--<< DEBG >>--  Doing bin index 38.
+*** Binning optical depths ***
+Binning h1 vs. c4
+Number of good pixels: 41722
+Calculating 50.0 th percentiles
+--<< DEBG >>--  Doing bin index 0.
+--<< DEBG >>--  Doing bin index 1.
+--<< DEBG >>--  Doing bin index 2.
+--<< DEBG >>--  Doing bin index 3.
+--<< DEBG >>--  Doing bin index 4.
+--<< DEBG >>--  Doing bin index 5.
+--<< DEBG >>--  Doing bin index 6.
+--<< DEBG >>--  Doing bin index 7.
+--<< DEBG >>--  Doing bin index 8.
+--<< DEBG >>--  Doing bin index 9.
+--<< DEBG >>--  Doing bin index 10.
+--<< DEBG >>--  Doing bin index 11.
+--<< DEBG >>--  Doing bin index 12.
+--<< DEBG >>--  Doing bin index 13.
+--<< DEBG >>--  Doing bin index 14.
+--<< DEBG >>--  Doing bin index 15.
+--<< DEBG >>--  Doing bin index 16.
+--<< DEBG >>--  Doing bin index 17.
+--<< DEBG >>--  Doing bin index 18.
+--<< DEBG >>--  Doing bin index 19.
+--<< DEBG >>--  Doing bin index 20.
+--<< DEBG >>--  Doing bin index 21.
+--<< DEBG >>--  Doing bin index 22.
+--<< DEBG >>--  Doing bin index 23.
+--<< DEBG >>--  Doing bin index 24.
+--<< DEBG >>--  Doing bin index 25.
+--<< DEBG >>--  Doing bin index 26.
+--<< DEBG >>--  Doing bin index 27.
+--<< DEBG >>--  Doing bin index 28.
+--<< DEBG >>--  Doing bin index 29.
+--<< DEBG >>--  Doing bin index 30.
+--<< DEBG >>--  Doing bin index 31.
+--<< DEBG >>--  Doing bin index 32.
+--<< DEBG >>--  Doing bin index 33.
+--<< DEBG >>--  Doing bin index 34.
+--<< DEBG >>--  Doing bin index 35.
+--<< DEBG >>--  Doing bin index 36.
+--<< DEBG >>--  Doing bin index 37.
+--<< DEBG >>--  Doing bin index 38.
+Calculating 50.0 th percentiles
+--<< DEBG >>--  Doing bin index 0.
+--<< DEBG >>--  Doing bin index 1.
+--<< DEBG >>--  Doing bin index 2.
+--<< DEBG >>--  Doing bin index 3.
+--<< DEBG >>--  Doing bin index 4.
+--<< DEBG >>--  Doing bin index 5.
+--<< DEBG >>--  Doing bin index 6.
+--<< DEBG >>--  Doing bin index 7.
+--<< DEBG >>--  Doing bin index 8.
+--<< DEBG >>--  Doing bin index 9.
+--<< DEBG >>--  Doing bin index 10.
+--<< DEBG >>--  Doing bin index 11.
+--<< DEBG >>--  Doing bin index 12.
+--<< DEBG >>--  Doing bin index 13.
+--<< DEBG >>--  Doing bin index 14.
+--<< DEBG >>--  Doing bin index 15.
+--<< DEBG >>--  Doing bin index 16.
+--<< DEBG >>--  Doing bin index 17.
+--<< DEBG >>--  Doing bin index 18.
+--<< DEBG >>--  Doing bin index 19.
+--<< DEBG >>--  Doing bin index 20.
+--<< DEBG >>--  Doing bin index 21.
+--<< DEBG >>--  Doing bin index 22.
+--<< DEBG >>--  Doing bin index 23.
+--<< DEBG >>--  Doing bin index 24.
+--<< DEBG >>--  Doing bin index 25.
+--<< DEBG >>--  Doing bin index 26.
+--<< DEBG >>--  Doing bin index 27.
+--<< DEBG >>--  Doing bin index 28.
+--<< DEBG >>--  Doing bin index 29.
+--<< DEBG >>--  Doing bin index 30.
+--<< DEBG >>--  Doing bin index 31.
+--<< DEBG >>--  Doing bin index 32.
+--<< DEBG >>--  Doing bin index 33.
+--<< DEBG >>--  Doing bin index 34.
+--<< DEBG >>--  Doing bin index 35.
+--<< DEBG >>--  Doing bin index 36.
+--<< DEBG >>--  Doing bin index 37.
+--<< DEBG >>--  Doing bin index 38.
+*** Binning optical depths ***
+Binning h1 vs. c4
+Number of good pixels: 41722
+Calculating 50.0 th percentiles
+--<< DEBG >>--  Doing bin index 0.
+--<< DEBG >>--  Doing bin index 1.
+--<< DEBG >>--  Doing bin index 2.
+--<< DEBG >>--  Doing bin index 3.
+--<< DEBG >>--  Doing bin index 4.
+--<< DEBG >>--  Doing bin index 5.
+--<< DEBG >>--  Doing bin index 6.
+--<< DEBG >>--  Doing bin index 7.
+--<< DEBG >>--  Doing bin index 8.
+--<< DEBG >>--  Doing bin index 9.
+--<< DEBG >>--  Doing bin index 10.
+--<< DEBG >>--  Doing bin index 11.
+--<< DEBG >>--  Doing bin index 12.
+--<< DEBG >>--  Doing bin index 13.
+--<< DEBG >>--  Doing bin index 14.
+--<< DEBG >>--  Doing bin index 15.
+--<< DEBG >>--  Doing bin index 16.
+--<< DEBG >>--  Doing bin index 17.
+--<< DEBG >>--  Doing bin index 18.
+--<< DEBG >>--  Doing bin index 19.
+--<< DEBG >>--  Doing bin index 20.
+--<< DEBG >>--  Doing bin index 21.
+--<< DEBG >>--  Doing bin index 22.
+--<< DEBG >>--  Doing bin index 23.
+--<< DEBG >>--  Doing bin index 24.
+--<< DEBG >>--  Doing bin index 25.
+--<< DEBG >>--  Doing bin index 26.
+--<< DEBG >>--  Doing bin index 27.
+--<< DEBG >>--  Doing bin index 28.
+--<< DEBG >>--  Doing bin index 29.
+--<< DEBG >>--  Doing bin index 30.
+--<< DEBG >>--  Doing bin index 31.
+--<< DEBG >>--  Doing bin index 32.
+--<< DEBG >>--  Doing bin index 33.
+--<< DEBG >>--  Doing bin index 34.
+--<< DEBG >>--  Doing bin index 35.
+--<< DEBG >>--  Doing bin index 36.
+--<< DEBG >>--  Doing bin index 37.
+--<< DEBG >>--  Doing bin index 38.
+Calculating 50.0 th percentiles
+--<< DEBG >>--  Doing bin index 0.
+--<< DEBG >>--  Doing bin index 1.
+--<< DEBG >>--  Doing bin index 2.
+--<< DEBG >>--  Doing bin index 3.
+--<< DEBG >>--  Doing bin index 4.
+--<< DEBG >>--  Doing bin index 5.
+--<< DEBG >>--  Doing bin index 6.
+--<< DEBG >>--  Doing bin index 7.
+--<< DEBG >>--  Doing bin index 8.
+--<< DEBG >>--  Doing bin index 9.
+--<< DEBG >>--  Doing bin index 10.
+--<< DEBG >>--  Doing bin index 11.
+--<< DEBG >>--  Doing bin index 12.
+--<< DEBG >>--  Doing bin index 13.
+--<< DEBG >>--  Doing bin index 14.
+--<< DEBG >>--  Doing bin index 15.
+--<< DEBG >>--  Doing bin index 16.
+--<< DEBG >>--  Doing bin index 17.
+--<< DEBG >>--  Doing bin index 18.
+--<< DEBG >>--  Doing bin index 19.
+--<< DEBG >>--  Doing bin index 20.
+--<< DEBG >>--  Doing bin index 21.
+--<< DEBG >>--  Doing bin index 22.
+--<< DEBG >>--  Doing bin index 23.
+--<< DEBG >>--  Doing bin index 24.
+--<< DEBG >>--  Doing bin index 25.
+--<< DEBG >>--  Doing bin index 26.
+--<< DEBG >>--  Doing bin index 27.
+--<< DEBG >>--  Doing bin index 28.
+--<< DEBG >>--  Doing bin index 29.
+--<< DEBG >>--  Doing bin index 30.
+--<< DEBG >>--  Doing bin index 31.
+--<< DEBG >>--  Doing bin index 32.
+--<< DEBG >>--  Doing bin index 33.
+--<< DEBG >>--  Doing bin index 34.
+--<< DEBG >>--  Doing bin index 35.
+--<< DEBG >>--  Doing bin index 36.
+--<< DEBG >>--  Doing bin index 37.
+--<< DEBG >>--  Doing bin index 38.
+*** Binning optical depths ***
+Binning h1 vs. c4
+Number of good pixels: 41722
+Calculating 50.0 th percentiles
+--<< DEBG >>--  Doing bin index 0.
+--<< DEBG >>--  Doing bin index 1.
+--<< DEBG >>--  Doing bin index 2.
+--<< DEBG >>--  Doing bin index 3.
+--<< DEBG >>--  Doing bin index 4.
+--<< DEBG >>--  Doing bin index 5.
+--<< DEBG >>--  Doing bin index 6.
+--<< DEBG >>--  Doing bin index 7.
+--<< DEBG >>--  Doing bin index 8.
+--<< DEBG >>--  Doing bin index 9.
+--<< DEBG >>--  Doing bin index 10.
+--<< DEBG >>--  Doing bin index 11.
+--<< DEBG >>--  Doing bin index 12.
+--<< DEBG >>--  Doing bin index 13.
+--<< DEBG >>--  Doing bin index 14.
+--<< DEBG >>--  Doing bin index 15.
+--<< DEBG >>--  Doing bin index 16.
+--<< DEBG >>--  Doing bin index 17.
+--<< DEBG >>--  Doing bin index 18.
+--<< DEBG >>--  Doing bin index 19.
+--<< DEBG >>--  Doing bin index 20.
+--<< DEBG >>--  Doing bin index 21.
+--<< DEBG >>--  Doing bin index 22.
+--<< DEBG >>--  Doing bin index 23.
+--<< DEBG >>--  Doing bin index 24.
+--<< DEBG >>--  Doing bin index 25.
+--<< DEBG >>--  Doing bin index 26.
+--<< DEBG >>--  Doing bin index 27.
+--<< DEBG >>--  Doing bin index 28.
+--<< DEBG >>--  Doing bin index 29.
+--<< DEBG >>--  Doing bin index 30.
+--<< DEBG >>--  Doing bin index 31.
+--<< DEBG >>--  Doing bin index 32.
+--<< DEBG >>--  Doing bin index 33.
+--<< DEBG >>--  Doing bin index 34.
+--<< DEBG >>--  Doing bin index 35.
+--<< DEBG >>--  Doing bin index 36.
+--<< DEBG >>--  Doing bin index 37.
+--<< DEBG >>--  Doing bin index 38.
+Calculating 50.0 th percentiles
+--<< DEBG >>--  Doing bin index 0.
+--<< DEBG >>--  Doing bin index 1.
+--<< DEBG >>--  Doing bin index 2.
+--<< DEBG >>--  Doing bin index 3.
+--<< DEBG >>--  Doing bin index 4.
+--<< DEBG >>--  Doing bin index 5.
+--<< DEBG >>--  Doing bin index 6.
+--<< DEBG >>--  Doing bin index 7.
+--<< DEBG >>--  Doing bin index 8.
+--<< DEBG >>--  Doing bin index 9.
+--<< DEBG >>--  Doing bin index 10.
+--<< DEBG >>--  Doing bin index 11.
+--<< DEBG >>--  Doing bin index 12.
+--<< DEBG >>--  Doing bin index 13.
+--<< DEBG >>--  Doing bin index 14.
+--<< DEBG >>--  Doing bin index 15.
+--<< DEBG >>--  Doing bin index 16.
+--<< DEBG >>--  Doing bin index 17.
+--<< DEBG >>--  Doing bin index 18.
+--<< DEBG >>--  Doing bin index 19.
+--<< DEBG >>--  Doing bin index 20.
+--<< DEBG >>--  Doing bin index 21.
+--<< DEBG >>--  Doing bin index 22.
+--<< DEBG >>--  Doing bin index 23.
+--<< DEBG >>--  Doing bin index 24.
+--<< DEBG >>--  Doing bin index 25.
+--<< DEBG >>--  Doing bin index 26.
+--<< DEBG >>--  Doing bin index 27.
+--<< DEBG >>--  Doing bin index 28.
+--<< DEBG >>--  Doing bin index 29.
+--<< DEBG >>--  Doing bin index 30.
+--<< DEBG >>--  Doing bin index 31.
+--<< DEBG >>--  Doing bin index 32.
+--<< DEBG >>--  Doing bin index 33.
+--<< DEBG >>--  Doing bin index 34.
+--<< DEBG >>--  Doing bin index 35.
+--<< DEBG >>--  Doing bin index 36.
+--<< DEBG >>--  Doing bin index 37.
+--<< DEBG >>--  Doing bin index 38.

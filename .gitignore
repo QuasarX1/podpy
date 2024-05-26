@@ -3,3 +3,9 @@ __pycache__/
 
 # Instalation environment folder
 environment/
+
+# Temp ignore for dev environment activation
+activate
+
+# Temp ignore for test data
+LongSpectrum.hdf5

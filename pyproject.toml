@@ -29,6 +29,7 @@ dependencies = [
   "numpy",
   "scipy",
   "matplotlib",
+  "PyQt5",
   "astropy",
   "QuasarCode",
   "h5py",
@@ -41,6 +42,7 @@ Source = "https://github.com/QuasarX1/podpy-refocused"
 
 [project.scripts]
 pod-run-example = "podpy_refocused._scripts.example:main"
+pod-plot-specwizard-relation = "podpy_refocused._scripts.plot_from_specwizard:main"
 
 [tool.hatch.version]
 path = "src/podpy_refocused/__about__.py"
