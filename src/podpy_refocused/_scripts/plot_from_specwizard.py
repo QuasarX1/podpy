@@ -1,14 +1,20 @@
 # SPDX-FileCopyrightText: 2024-present Christopher J. R. Rowe <contact@cjrrowe.com>
 #
 # SPDX-License-Identifier: MIT
+from .._Spectrum import from_SpecWizard, fit_continuum, recover_c4, recover_o6
+from .._TauBinned import bin_combined_pixels_from_SpecWizard, BinnedOpticalDepthResults
+from .. import plotting
+
 from QuasarCode import Settings, Console
 from QuasarCode.Tools import ScriptWrapper
 from typing import Union, List
 from matplotlib import pyplot as plt
+import datetime
+import os
 
-from .._Spectrum import from_SpecWizard, fit_continuum, recover_c4, recover_o6
-from .._TauBinned import bin_combined_pixels_from_SpecWizard, BinnedOpticalDepthResults
-from .. import plotting
+DEFAULT_SPECWIZARD_FILENAME = "LongSpectrum.hdf5"
+
+
 
 def __main(
             datafiles: List[str],
@@ -38,10 +44,25 @@ def __main(
     # Load and process data
 
     dataset_results = []
-    for i in range(len(datafiles) if not combine_datafiles else 1):
+    if combine_datafiles:
+        datasets = []
+    for i in range(len(datafiles)):
+
+        datafile = datafiles[i]
+        
+        if not os.path.isfile(datafile):
+            if os.path.isdir(datafile):
+                test_datafile = os.path.join(datafile, DEFAULT_SPECWIZARD_FILENAME)
+                if os.path.isfile(test_datafile):
+                    datafile = test_datafile
+                else:
+                    raise FileNotFoundError(f"Directory was provided, but contained no file named \"{DEFAULT_SPECWIZARD_FILENAME}\".\nDirectory was: {datafile}")
+            else:
+                raise FileNotFoundError(f"No file exists at: {datafile}")
+
         # Load the data (and recover H I)
         spectrum_objects = from_SpecWizard(
-                                filepath = datafiles[i],
+                                filepath = datafile,
                                 sightline_filter = input_los_mask[i] if input_los_mask is not None else None,
                                 identify_h1_contamination = not no_h1_corrections,
                                 correct_h1_contamination = (not flag_h1_corrections_only) and (not no_h1_corrections),
@@ -51,14 +72,21 @@ def __main(
         # Recover metal optical depth
         if c4:
             fit_continuum(*spectrum_objects)
-            recover_c4(*spectrum_objects, observed_log10_flat_level = None if metal_flat_level_offset is None else metal_flat_level_offset[i] if len(metal_flat_level_offset) > 1 else metal_flat_level_offset[0])
+            recover_c4(*spectrum_objects, observed_log10_flat_level = None if metal_flat_level_offset is None else metal_flat_level_offset[i] if len(metal_flat_level_offset) > 1 else metal_flat_level_offset[0], apply_recomended_corrections = not no_metal_corrections)
         elif o6:
-            recover_o6(*spectrum_objects, observed_log10_flat_level = None if metal_flat_level_offset is None else metal_flat_level_offset[i] if len(metal_flat_level_offset) > 1 else metal_flat_level_offset[0])
+            recover_o6(*spectrum_objects, observed_log10_flat_level = None if metal_flat_level_offset is None else metal_flat_level_offset[i] if len(metal_flat_level_offset) > 1 else metal_flat_level_offset[0], apply_recomended_corrections = not no_metal_corrections)
         else:
             raise RuntimeError()
 
-        # Combine and bin pixels
-        dataset_results.append(bin_combined_pixels_from_SpecWizard("h1", ion_string, *spectrum_objects, x_limits = (x_min, x_max), n_bootstrap_resamples = 0, legacy = False))
+        if not combine_datafiles:
+            # Combine and bin pixels
+            dataset_results.append(bin_combined_pixels_from_SpecWizard("h1", ion_string, *spectrum_objects, x_limits = (x_min, x_max), n_bootstrap_resamples = 0, legacy = False))
+        else:
+            datasets.extend(spectrum_objects)
+
+    if combine_datafiles:
+        #TODO: check this is the right way to do this!
+        dataset_results.append(bin_combined_pixels_from_SpecWizard("h1", ion_string, *datasets, x_limits = (x_min, x_max), n_bootstrap_resamples = 0, legacy = False))
 
     # Plot results
 
@@ -99,37 +127,128 @@ def __main(
         figure.savefig(output_file)
 
 def main():
-    script_wrapper = ScriptWrapper("pod-plot-specwizard-relation",
-                                   "Christopher Rowe",
-                                   "1.2.0",
-                                   "26/05/2024",
-                                   "Plots the relation between two ion's tau values.",
-                                   ["podpy-refocused"],
-                                   [],
-                                   [],
-                                   [["datafiles",                   "i",    "Semicolon seperated list of SpecWizard output files. Defaults to a single file in the current working directory named \"LongSpectrum.hdf5\".", False, False, ScriptWrapper.make_list_converter(";"), ["./LongSpectrum.hdf5"]],
-                                    ["combine-datafiles",           None,   "Combine the results from all data files into a single dataset.anUses the method from Turner et al. 2016 for combining data from different QSOs.", False, True, None, None],
-                                    ["c4",                          None,   "Select C IV as the metal ion.", False, True, None, None, ["o6"]],
-                                    ["o6",                          None,   "Select O VI as the metal ion.", False, True, None, None, ["c4"]],
-                                    ["x-min",                       None,   "Minimum log10-space value of tau_HI to consider.\nDefault is -1.0", False, False, float, -1.0],
-                                    ["x-max",                       None,   "Maximum log10-space value of tau_HI to consider.\nDefault is 2.5", False, False, float,  2.5],
-                                    ["y-min",                       None,   "Minimum log10-space value of tau_Z to display.", False, False, float, None],
-                                    ["y-max",                       None,   "Maximum log10-space value of tau_Z to display.\nNo default value, however 0.0 is a good choice for C IV", False, False, float, None],
-                                    ["output-file",                 "o",    "Name of the file to save plot as. Leave unset to show the plot in a matplotlib interactive window.", False, False, None, None],
-                                    ["input-los-mask",              None,   "Mask for line-of-sight selection from input file(s).\nUse a string of 'T' and 'F' seperated by a semicolon for each input file if more than one is specified.\nFor example: \"TFTTF\" for a file with 5 lines of sight.\nSpecifying only one input mask and many files will result in the mask being appled to each file.\nSpecifying fewer mask elements than lines of sight avalible will result in just the first N lines of sight being considered for a mask of length N.", False, False, ScriptWrapper.make_list_converter(";", lambda v: [e.lower() == "t" for e in v]), None],
-                                    ["aguirre05-obs",               None,   "Plot the observational data from Aguirre et al. 2005.", False, True, None, None],
-                                    ["turner16-obs",                None,   "Plot the observational data from Turner et al. 2016.", False, True, None, None],
-                                    ["turner16-synthetic",          None,   "Plot the SpecWizard data from Turner et al. 2016.", False, True, None, None],
-                                    ["flag-h1-corrections-only",    None,   "Identify saturated H I pixels, but make no attempt to correct them.", False, True, None, None],
-                                    ["no-h1-corrections",           None,   "Make no alterations to saturated H I pixels.", False, True, None, None],
-                                    ["no-metal-corrections",        None,   "Make no alterations to saturated metal pixels.", False, True, None, None],
-                                    ["metal-flat-level-offset",     None,   "Value of log10 tau_Z to add to recovered metal optical depths (in non-log space).\nUse a semicolon seperated list if a different value is required for each data file.", False, False, ScriptWrapper.make_list_converter(";", float), None],
-                                    ["labels",                      None,   "Custom dataset label(s).\nUse a semicolon seperated list if more than one data file is specified.", False, False, ScriptWrapper.make_list_converter(";"), None],
-                                    ["linestyles",                  None,   "Custom dataset line style(s).\nUse a semicolon seperated list if more than one data file is specified.", False, False, ScriptWrapper.make_list_converter(";"), None],
-                                    ["colours",                     None,   "Custom dataset line colour(s).\nUse a semicolon seperated list if more than one data file is specified.", False, False, ScriptWrapper.make_list_converter(";"), None],
-                                    ["title",                       None,   "Optional plot title.", False, False, None, None],
-                                    ["density",                     None,   "Show a density hexplot of the pixel pairs.", False, True, None, None],
-                                    ["density-dataset",             None,   "Index of the dataset to use for the density hexplot when more than one non-combined dataset is provided. Defaults to index 0.\nDefault is viridis.", False, False, int, 0],
-                                    ["density-colourmap",           None,   "Colourmap to use for the density hexplot.\nDefault is viridis.", False, False, str, "viridis"]])
-    
-    script_wrapper.run(__main)
+    ScriptWrapper(
+        command = "pod-plot-specwizard-relation",
+        authors = [ScriptWrapper.AuthorInfomation(given_name = "Christopher", family_name = "Rowe", email = "contact@cjrrowe.com", website_url = "cjrrowe.com")],
+        version = "1.3.0",
+        edit_date = datetime.date(2024, 5, 28),
+        description = "Plots the relation between two ion's tau values.",
+        dependancies = ["podpy-refocused"],
+        usage_paramiter_examples = None,
+        parameters = [
+            ScriptWrapper.OptionalParam[List[str]](
+                "datafiles", "i",
+                description = "Semicolon seperated list of SpecWizard output files.\nDefaults to a single file in the current working directory named \"LongSpectrum.hdf5\".",
+                default_value = ["./LongSpectrum.hdf5"],
+                conversion_function = ScriptWrapper.make_list_converter(";")
+            ),
+            ScriptWrapper.Flag(
+                "combine-datafiles",
+                description = "Combine the results from all data files into a single dataset.\nUses the method from Turner et al. 2016 for combining data from different QSOs."
+            ),
+            ScriptWrapper.Flag(
+                "c4",
+                description = "Select C IV as the metal ion.",
+                conflicts = ["o6"]
+            ),
+            ScriptWrapper.Flag(
+                "o6",
+                description = "Select O VI as the metal ion.",
+                conflicts = ["c4"]
+            ),
+            ScriptWrapper.OptionalParam[float](
+                "x-min",
+                description = "Minimum log10-space value of tau_HI to consider.\nDefault is -1.0",
+                default_value = -1.0,
+                conversion_function = float
+            ),
+            ScriptWrapper.OptionalParam[float](
+                "x-max",
+                description = "Maximum log10-space value of tau_HI to consider.\nDefault is 2.5",
+                default_value = 2.5,
+                conversion_function = float
+            ),
+            ScriptWrapper.OptionalParam[float | None](
+                "y-min",
+                description = "Minimum log10-space value of tau_Z to display.",
+                conversion_function = float
+            ),
+            ScriptWrapper.OptionalParam[float | None](
+                "y-max",
+                description = "Maximum log10-space value of tau_Z to display.\nNo default value, however 0.0 is a good choice for C IV.",
+                conversion_function = float
+            ),
+            ScriptWrapper.OptionalParam[str | None](
+                "output-file", "o",
+                description = "Name of the file to save plot as. Leave unset to show the plot in a matplotlib interactive window."
+            ),
+            ScriptWrapper.OptionalParam[List[List[bool]] | None](
+                "input-los-mask",
+                description = "Mask for line-of-sight selection from input file(s).\nUse a string of 'T' and 'F' seperated by a semicolon for each input file if more than one is specified.\nFor example: \"TFTTF\" for a file with 5 lines of sight.\nSpecifying only one input mask and many files will result in the mask being appled to each file.\nSpecifying fewer mask elements than lines of sight avalible will result in just the first N lines of sight\nbeing considered for a mask of length N.",
+                conversion_function = ScriptWrapper.make_list_converter(";", lambda v: [e.lower() == "t" for e in v])
+            ),
+            ScriptWrapper.Flag(
+                "aguirre05-obs",
+                description = "Plot the observational data from Aguirre et al. 2005."
+            ),
+            ScriptWrapper.Flag(
+                "turner16-obs",
+                description = "Plot the observational data from Turner et al. 2016."
+            ),
+            ScriptWrapper.Flag(
+                "turner16-synthetic",
+                description = "Plot the SpecWizard data from Turner et al. 2016."
+            ),
+            ScriptWrapper.Flag(
+                "flag-h1-corrections-only",
+                description = "Identify saturated H I pixels, but make no attempt to correct them."
+            ),
+            ScriptWrapper.Flag(
+                "no-h1-corrections",
+                description = "Make no alterations to saturated H I pixels."
+            ),
+            ScriptWrapper.Flag(
+                "no-metal-corrections",
+                description = "Make no alterations to saturated metal pixels."
+            ),
+            ScriptWrapper.OptionalParam[List[float] | None](
+                "metal-flat-level-offset",
+                description = "Value of log10 tau_Z to add to recovered metal optical depths (in non-log space).\nUse a semicolon seperated list if a different value is required for each data file.",
+                conversion_function = ScriptWrapper.make_list_converter(";")
+            ),
+            ScriptWrapper.OptionalParam[List[str] | None](
+                "labels",
+                description = "Custom dataset label(s).\nUse a semicolon seperated list if more than one data file is specified.",
+                conversion_function = ScriptWrapper.make_list_converter(";")
+            ),
+            ScriptWrapper.OptionalParam[List[str] | None](
+                "linestyles",
+                description = "Custom dataset line style(s).\nUse a semicolon seperated list if more than one data file is specified.",
+                conversion_function = ScriptWrapper.make_list_converter(";")
+            ),
+            ScriptWrapper.OptionalParam[List[str] | None](
+                "colours",
+                description = "Custom dataset line colour(s).\nUse a semicolon seperated list if more than one data file is specified.",
+                conversion_function = ScriptWrapper.make_list_converter(";")
+            ),
+            ScriptWrapper.OptionalParam[str | None](
+                "title",
+                description = "Optional plot title."
+            ),
+            ScriptWrapper.Flag(
+                "density",
+                description = "Show a density hexplot of the pixel pairs."
+            ),
+            ScriptWrapper.OptionalParam[int](
+                "density-dataset",
+                description = "Index of the dataset to use for the density hexplot when more than one non-combined dataset is provided. Defaults to index 0.",
+                default_value = 0,
+                conversion_function = int
+            ),
+            ScriptWrapper.OptionalParam[str](
+                "density-colourmap",
+                description = "Colourmap to use for the density hexplot.\nDefault is viridis.",
+                default_value = "viridis"
+            ),
+        ]
+    ).run(__main)

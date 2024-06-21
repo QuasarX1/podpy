@@ -1,18 +1,23 @@
 # SPDX-FileCopyrightText: 2024-present Christopher J. R. Rowe <contact@cjrrowe.com>
 #
 # SPDX-License-Identifier: MIT
+from .._Spectrum import from_SpecWizard, fit_continuum, recover_c4, recover_si4, recover_o6
+from .._TauBinned import bin_combined_pixels_from_SpecWizard, BinnedOpticalDepthResults
+from .. import plotting
+from .._universe import c as speed_of_light_kms
+
 import numpy as np
 from QuasarCode import Settings, Console
-from QuasarCode.Tools import ScriptWrapper
+from QuasarCode.Tools import ScriptWrapper, ArrayVisuliser
 from typing import Union, List
 from matplotlib import pyplot as plt
 import h5py as h5
 import datetime
+import os
 
-from .._Spectrum import from_SpecWizard, fit_continuum, recover_c4, recover_o6
-from .._TauBinned import bin_combined_pixels_from_SpecWizard, BinnedOpticalDepthResults
-from .. import plotting
-from .._universe import c as speed_of_light_kms
+DEFAULT_SPECWIZARD_FILENAME = "LongSpectrum.hdf5"
+
+
 
 def __main(
            datafiles: List[str],
@@ -20,6 +25,7 @@ def __main(
            raw: bool,
            h1: bool,
            c4: bool,
+           si4: bool,
            o6: bool,
            target_spectra: List[int],
            wavelength: bool,
@@ -27,6 +33,8 @@ def __main(
            redshift: bool,
            x_min: Union[float, None],
            x_max: Union[float, None],
+           y_min: Union[float, None],
+           y_max: Union[float, None],
            no_h1_corrections: bool,
            no_metal_corrections: bool,
            compare_corrections: bool,
@@ -35,7 +43,7 @@ def __main(
            output_file: Union[str, None]
         ) -> None:
     
-    if not (raw or h1 or c4 or o6):
+    if not (raw or h1 or c4 or si4 or o6):
         Console.print_error("Target ion(s) must be specified!")
         Console.print_info("Terminating...")
         return
@@ -45,17 +53,38 @@ def __main(
         Console.print_info("Terminating...")
         return
     
-    if len(datafiles) > 1 and sum([raw, h1, c4, o6]) > 1:
+    if len(datafiles) > 1 and sum([raw, h1, c4, si4, o6]) > 1:
         Console.print_error("Only one ion can be specified when comparing different files!")
         Console.print_info("Terminating...")
+        return
     
     if len(datafiles) > 1 and len(target_spectra) != 1 and len(target_spectra) != len(datafiles):
         Console.print_error("Invalid number of spectrum indexes.\nEither just a single index should be specified, or a number of indexes matching the number of data files.")
         Console.print_info("Terminating...")
+        return
 
     if len(datafiles) > 1 and datafile_names is not None and len(datafile_names) != len(datafiles):
         Console.print_error("Invalid number of data file names.\nIf specified, must be a number of elements matching the number of data files.")
         Console.print_info("Terminating...")
+        return
+    
+    if Settings.verbose:
+        Console.print_verbose_info("Reading data from the following files/directories:\n    {}".format("    \n".join(datafiles)))
+        if raw: Console.print_verbose_info("Displaying raw flux pixels.")
+        if h1: Console.print_verbose_info("Displaying H I pixels.")
+        if c4: Console.print_verbose_info("Displaying C IV pixels.")
+        if si4: Console.print_verbose_info("Displaying Si IV pixels.")
+        if o6: Console.print_verbose_info("Displaying O VI pixels.")
+        if wavelength: Console.print_verbose_info("Pixels in wavelength space (Angstroms).")
+        elif velocity: Console.print_verbose_info("Pixels in velocity space (km/s).")
+        elif redshift: Console.print_verbose_info("Pixels in redshift space.")
+        if not compare_corrections:
+            Console.print_verbose_info("H I corrections: {}".format("no" if no_h1_corrections else "yes"))
+            Console.print_verbose_info("Metal corrections: {}".format("no" if no_metal_corrections else "yes"))
+        else:
+            Console.print_verbose_info("Compairing corrections.")
+        if use_RSODOST_field: Console.print_verbose_info("Reading optical depths from \"RedshiftSpaceOpticalDepthOfStrongestTransition\" field.")
+        Console.print_verbose_info("Output: {}".format("interactive plot" if output_file is None else output_file))
     
     if datafile_names is None:
         datafile_names = [f"File #{n}" for n in range(1, 1 + len(datafiles))]
@@ -69,8 +98,20 @@ def __main(
     linestyles = []
     alphas = []
 
+#pylint:disable-next=consider-using-enumerate
     for datafile_index in range(len(datafiles)):
         datafile = datafiles[datafile_index]
+
+        if not os.path.isfile(datafile):
+            if os.path.isdir(datafile):
+                test_datafile = os.path.join(datafile, DEFAULT_SPECWIZARD_FILENAME)
+                if os.path.isfile(test_datafile):
+                    datafile = test_datafile
+                else:
+                    raise FileNotFoundError(f"Directory was provided, but contained no file named \"{DEFAULT_SPECWIZARD_FILENAME}\".\nDirectory was: {datafile}")
+            else:
+                raise FileNotFoundError(f"No file exists at: {datafile}")
+
         target_spectrum = target_spectra[0] if len(target_spectra) == 1 else target_spectra[datafile_index]
 
         x_data.append([])
@@ -80,14 +121,21 @@ def __main(
         linestyles.append([])
         alphas.append([])
 
+        Console.print_verbose_info(f"Loading data from: {datafile}")
+
         data = h5.File(datafile)
         first_spec_num = int(data["Parameters/SpecWizardRuntimeParameters"].attrs["first_specnum"])
         n_spectra = int(data["Parameters/SpecWizardRuntimeParameters"].attrs["NumberOfSpectra"])
+
+        Console.print_verbose_info(f"Selecting spectrum at index: {target_spectrum}")
+
         if (target_spectrum >= 0 and target_spectrum >= n_spectra) or (target_spectrum < 0 and -target_spectrum > n_spectra):
             raise IndexError(f"Unable to select sightline index {target_spectrum} as there are only {n_spectra} spectra avalible.")
         selected_spectrum_data = data[f"Spectrum{first_spec_num + target_spectrum}"]
 
         if raw:
+            Console.print_verbose_info("Loading raw fluxes...", end = "")
+
             x_data[datafile_index].append(data["Wavelength_Ang"][:])
             flux_data[datafile_index].append(selected_spectrum_data["Flux"][:])
             labels[datafile_index].append("Raw Flux")
@@ -95,156 +143,407 @@ def __main(
             linestyles[datafile_index].append("-")
             alphas[datafile_index].append(1.0)
 
+            print("done")
+            Console.print_verbose_info(f"Got {len(x_data[datafile_index][-1])} pixels.")
+            Console.print_debug("Raw Flux:\n" + ArrayVisuliser([x_data[datafile_index][-1], flux_data[datafile_index][-1]], ["Wavelengths", "Fluxes"]).render(show_plus_minus_1 = True))
+
         if not use_RSODOST_field:
 
-            uncorrected_h1_wavelength = None
-            uncorrected_c4_wavelength = None
-            uncorrected_o6_wavelength = None
-            uncorrected_h1_redshift = None
-            uncorrected_c4_redshift = None
-            uncorrected_o6_redshift = None
+            h1_wavelength = None
+            c4_wavelength = None
+            si4_wavelength = None
+            o6_wavelength = None
 
-            uncorrected_h1_tau = None
-            uncorrected_c4_tau = None
-            uncorrected_o6_tau = None
+            h1_redshift = None
+            c4_redshift = None
+            si4_redshift = None
+            o6_redshift = None
 
-            corrected_h1_wavelength = None
-            corrected_c4_wavelength = None
-            corrected_o6_wavelength = None
-            corrected_h1_redshift = None
-            corrected_c4_redshift = None
-            corrected_o6_redshift = None
+            uncorrected_hydrogen_uncorrected_h1_tau = None
+            uncorrected_hydrogen_uncorrected_c4_tau = None # H I corrections have no affect on the defualt corrections for C IV
+            uncorrected_hydrogen_uncorrected_si4_tau = None
+            uncorrected_hydrogen_uncorrected_o6_tau = None # Why does this have no effect?
+
+            uncorrected_hydrogen_corrected_h1_tau = None
+            uncorrected_hydrogen_corrected_c4_tau = None # H I corrections have no affect on the defualt corrections for C IV
+            uncorrected_hydrogen_corrected_si4_tau = None
+            uncorrected_hydrogen_corrected_o6_tau = None # Why does this have no effect?
+
+            corrected_hydrogen_uncorrected_h1_tau = None
+            corrected_hydrogen_uncorrected_c4_tau = None
+            corrected_hydrogen_uncorrected_si4_tau = None
+            corrected_hydrogen_uncorrected_o6_tau = None
 
             corrected_h1_tau = None
             corrected_c4_tau = None
+            corrected_si4_tau = None
             corrected_o6_tau = None
 
-            if h1 or c4:
-                dla_masked_spectrum_object = from_SpecWizard(
-                                                                filepath = datafile,
-                                                                sightline_filter = [target_spectrum],
-                                                                identify_h1_contamination = compare_corrections or not no_h1_corrections,
-                                                                correct_h1_contamination = compare_corrections or not no_h1_corrections,
-                                                                mask_dla = True
-                                                            )[0]
+            if h1 or c4 or si4:
+                uncorrected_h1_dla_masked_spectrum_object = from_SpecWizard(
+                    filepath = datafile,
+                    sightline_filter = [target_spectrum],
+                    identify_h1_contamination = False,
+                    correct_h1_contamination = False,
+                    mask_dla = True
+                )[0]
+                corrected_h1_dla_masked_spectrum_object = from_SpecWizard(
+                   filepath = datafile,
+                   sightline_filter = [target_spectrum],
+                   identify_h1_contamination = True,
+                   correct_h1_contamination = True,
+                   mask_dla = True
+                )[0]
+
                 if c4:
-                    if compare_corrections or not no_metal_corrections:
-                        recover_c4(dla_masked_spectrum_object, apply_recomended_corrections = True)
-                        corrected_c4_wavelength = dla_masked_spectrum_object.c4.lambdaa
-                        corrected_c4_redshift = dla_masked_spectrum_object.c4.z
-                        corrected_c4_tau = dla_masked_spectrum_object.c4.tau_rec
-                    if compare_corrections or no_metal_corrections:
-                        recover_c4(dla_masked_spectrum_object, apply_recomended_corrections = False)
-                        uncorrected_c4_wavelength = dla_masked_spectrum_object.c4.lambdaa
-                        uncorrected_c4_redshift = dla_masked_spectrum_object.c4.z
-                        uncorrected_c4_tau = dla_masked_spectrum_object.c4.tau_rec
-                
+                    #TODO:python -m debugpy --listen 5678 --wait-for-client $(which pod-plot-specwizard-spectrum) -i Turner16_QSO_Q1317-0507 --c4 --wavelength -v -d
+                    #breakpoint()#2479 6202.713041638517
+                    recover_c4(uncorrected_h1_dla_masked_spectrum_object, apply_recomended_corrections = True)
+                    recover_c4(corrected_h1_dla_masked_spectrum_object, apply_recomended_corrections = True)
+
+                    c4_wavelength = corrected_h1_dla_masked_spectrum_object.c4_data.lambdaa
+                    c4_redshift = corrected_h1_dla_masked_spectrum_object.c4_data.z
+
+                    assert (uncorrected_h1_dla_masked_spectrum_object.c4_data.lambdaa == corrected_h1_dla_masked_spectrum_object.c4_data.lambdaa).all()
+                    assert (uncorrected_h1_dla_masked_spectrum_object.c4_data.z == corrected_h1_dla_masked_spectrum_object.c4_data.z).all()
+
+                    uncorrected_hydrogen_uncorrected_c4_tau = uncorrected_h1_dla_masked_spectrum_object.c4_data.tau
+                    uncorrected_hydrogen_corrected_c4_tau = uncorrected_h1_dla_masked_spectrum_object.c4_data.tau_rec
+                    corrected_hydrogen_uncorrected_c4_tau = corrected_h1_dla_masked_spectrum_object.c4_data.tau
+                    corrected_c4_tau = corrected_h1_dla_masked_spectrum_object.c4_data.tau_rec
+                    
+                    if Settings.debug:
+                        Console.print_debug(ArrayVisuliser.arrange(2, [
+                            uncorrected_hydrogen_uncorrected_c4_tau, uncorrected_hydrogen_corrected_c4_tau,
+                            corrected_hydrogen_uncorrected_c4_tau,   corrected_c4_tau
+                                                                      ],
+                                                                      [
+                            "No H I, No C IV",   "No H I, With C IV",
+                            "With H I, No C IV", "With H I, With C IV"
+                                                                      ]).render())
+                        # Ensure that H I corrections have no affect on C IV raw data
+                        assert (uncorrected_hydrogen_uncorrected_c4_tau == corrected_hydrogen_uncorrected_c4_tau).all(), "H I correction had an affect on the recovery of tau_(C IV). This should not be the case with PodPy default recovery settings!"
+                        # Ensure that H I corrections have no affect on C IV corrected data
+                        assert (uncorrected_hydrogen_corrected_c4_tau   == corrected_c4_tau).all(),                      "H I correction had an affect on the recovery of tau_(C IV). This should not be the case with PodPy default recovery settings!"
+
+                if si4:
+                    recover_si4(uncorrected_h1_dla_masked_spectrum_object, apply_recomended_corrections = True)
+                    recover_si4(corrected_h1_dla_masked_spectrum_object, apply_recomended_corrections = True)
+
+                    si4_wavelength = corrected_h1_dla_masked_spectrum_object.si4_data.lambdaa
+                    si4_redshift = corrected_h1_dla_masked_spectrum_object.si4_data.z
+
+                    assert (uncorrected_h1_dla_masked_spectrum_object.si4_data.lambdaa == corrected_h1_dla_masked_spectrum_object.si4_data.lambdaa).all()
+                    assert (uncorrected_h1_dla_masked_spectrum_object.si4_data.z == corrected_h1_dla_masked_spectrum_object.si4_data.z).all()
+
+                    uncorrected_hydrogen_uncorrected_si4_tau = uncorrected_h1_dla_masked_spectrum_object.si4_data.tau
+                    uncorrected_hydrogen_corrected_si4_tau = uncorrected_h1_dla_masked_spectrum_object.si4_data.tau_rec
+                    corrected_hydrogen_uncorrected_si4_tau = corrected_h1_dla_masked_spectrum_object.si4_data.tau
+                    corrected_si4_tau = corrected_h1_dla_masked_spectrum_object.si4_data.tau_rec
+                    
+                    if Settings.debug:
+                        Console.print_debug(ArrayVisuliser.arrange(2, [
+                            uncorrected_hydrogen_uncorrected_si4_tau, uncorrected_hydrogen_corrected_si4_tau,
+                            corrected_hydrogen_uncorrected_si4_tau,   corrected_si4_tau
+                                                                      ],
+                                                                      [
+                            "No H I, No Si IV",   "No H I, With Si IV",
+                            "With H I, No Si IV", "With H I, With Si IV"
+                                                                      ]).render())
+                        # Ensure that H I corrections have no affect on Si IV raw data
+                        assert (uncorrected_hydrogen_uncorrected_si4_tau == corrected_hydrogen_uncorrected_si4_tau).all(), "H I correction had an affect on the recovery of tau_(C IV). This should not be the case with PodPy default recovery settings!"
+
                 if h1:
-                    if compare_corrections or not no_h1_corrections:
-                        corrected_h1_wavelength = dla_masked_spectrum_object.h1.lambdaa
-                        corrected_h1_redshift = dla_masked_spectrum_object.h1.z
-                        corrected_h1_tau = dla_masked_spectrum_object.h1.tau_rec
-                        if compare_corrections:
-                            # Compute the uncorrected H I optical depths
-                            uncorrected_h1_spectrum_object = from_SpecWizard(
-                                                                            filepath = datafile,
-                                                                            sightline_filter = [target_spectrum],
-                                                                            identify_h1_contamination = False,
-                                                                            correct_h1_contamination = False,
-                                                                            mask_dla = True
-                                                                        )[0]
-                            uncorrected_h1_wavelength = uncorrected_h1_spectrum_object.h1.lambdaa
-                            uncorrected_h1_redshift = uncorrected_h1_spectrum_object.h1.z
-                            uncorrected_h1_tau = uncorrected_h1_spectrum_object.h1.tau_rec
-                    else:
-                        uncorrected_h1_wavelength = dla_masked_spectrum_object.h1.lambdaa
-                        uncorrected_h1_redshift = dla_masked_spectrum_object.h1.z
-                        uncorrected_h1_tau = dla_masked_spectrum_object.h1.tau_rec
+                    h1_wavelength = corrected_h1_dla_masked_spectrum_object.h1_data.lambdaa
+                    h1_redshift = corrected_h1_dla_masked_spectrum_object.h1_data.z
+
+                    uncorrected_hydrogen_uncorrected_h1_tau = uncorrected_h1_dla_masked_spectrum_object.h1_data.tau
+                    uncorrected_hydrogen_corrected_h1_tau = uncorrected_h1_dla_masked_spectrum_object.h1_data.tau_rec
+                    corrected_hydrogen_uncorrected_h1_tau = corrected_h1_dla_masked_spectrum_object.h1_data.tau
+                    corrected_h1_tau = corrected_h1_dla_masked_spectrum_object.h1_data.tau_rec
+
+                    if Settings.debug:
+                        Console.print_debug(ArrayVisuliser.arrange(2, [
+                            uncorrected_hydrogen_uncorrected_h1_tau, uncorrected_hydrogen_corrected_h1_tau,
+                            corrected_hydrogen_uncorrected_h1_tau,   corrected_h1_tau
+                                                                      ],
+                                                                      [
+                            "No H I, No ?",   "No H I, With ?",
+                            "With H I, No ?", "With H I, With ?"
+                                                                      ]).render())
+                        Console.print_debug((uncorrected_hydrogen_uncorrected_h1_tau != uncorrected_hydrogen_corrected_h1_tau).sum(), uncorrected_hydrogen_uncorrected_h1_tau.shape)
+                        ArrayVisuliser([uncorrected_hydrogen_uncorrected_h1_tau[uncorrected_hydrogen_uncorrected_h1_tau != uncorrected_hydrogen_corrected_h1_tau], uncorrected_hydrogen_corrected_h1_tau[uncorrected_hydrogen_uncorrected_h1_tau != uncorrected_hydrogen_corrected_h1_tau]]).print()
+                        # Ensure that enabling H I recovery dosen't alter the raw data
+                        assert (uncorrected_hydrogen_uncorrected_h1_tau == corrected_hydrogen_uncorrected_h1_tau).all(), "Raw H I data altered by enabling H I recovery."
+                    if Settings.verbose or Settings.debug:
+                        # Ensure that the recovered H I data is unaltered from the raw data when H I recovery is disabled
+                        if not (uncorrected_hydrogen_uncorrected_h1_tau == uncorrected_hydrogen_corrected_h1_tau).all():
+                            Console.print_warning("H I recovery caused differences even though recovery is disabled. Is this due to limiting to values between tau min and max.")
 
             if o6:
-                non_dla_masked_spectrum_object = from_SpecWizard(
-                                    filepath = datafile,
-                                    sightline_filter = [target_spectrum],
-                                    identify_h1_contamination = not no_h1_corrections,
-                                    correct_h1_contamination = not no_h1_corrections,
-                                    mask_dla = False
-                                )[0]
-                if compare_corrections or not no_metal_corrections:
-                    recover_o6(non_dla_masked_spectrum_object, apply_recomended_corrections = True)
-                    corrected_o6_wavelength = non_dla_masked_spectrum_object.o6.lambdaa
-                    corrected_o6_redshift = non_dla_masked_spectrum_object.o6.z
-                    corrected_o6_tau = non_dla_masked_spectrum_object.o6.tau_rec
-                if compare_corrections or no_metal_corrections:
-                    recover_o6(non_dla_masked_spectrum_object, apply_recomended_corrections = False)
-                    uncorrected_o6_wavelength = non_dla_masked_spectrum_object.o6.lambdaa
-                    uncorrected_o6_redshift = non_dla_masked_spectrum_object.o6.z
-                    uncorrected_o6_tau = non_dla_masked_spectrum_object.o6.tau_rec
+                uncorrected_h1_non_dla_masked_spectrum_object = from_SpecWizard(
+                    filepath = datafile,
+                    sightline_filter = [target_spectrum],
+                    identify_h1_contamination = False,
+                    correct_h1_contamination = False,
+                    mask_dla = False
+                )[0]
+                corrected_h1_non_dla_masked_spectrum_object = from_SpecWizard(
+                    filepath = datafile,
+                    sightline_filter = [target_spectrum],
+                    identify_h1_contamination = True,
+                    correct_h1_contamination = True,
+                    mask_dla = False
+                )[0]
 
-            if corrected_h1_tau is not None:
-                x_data[datafile_index].append(corrected_h1_wavelength if wavelength else corrected_h1_redshift if redshift else corrected_h1_redshift * speed_of_light_kms)
-                flux_data[datafile_index].append(np.exp(-10**corrected_h1_tau))
-                labels[datafile_index].append("H I" if not compare_corrections else "H I (corrected)")
-                colours[datafile_index].append("black")
-                linestyles[datafile_index].append("-")
-                alphas[datafile_index].append(1.0)
-            if uncorrected_h1_tau is not None:
-                x_data[datafile_index].append(uncorrected_h1_wavelength if wavelength else uncorrected_h1_redshift if redshift else uncorrected_h1_redshift * speed_of_light_kms)
-                flux_data[datafile_index].append(np.exp(-10**uncorrected_h1_tau))
-                labels[datafile_index].append("Ly $\\alpha$" if not compare_corrections else "H I (Ly $\\alpha$)")
-                colours[datafile_index].append("black")
-                linestyles[datafile_index].append("--" if compare_corrections else "-")
-                alphas[datafile_index].append(1.0)
-            if corrected_c4_tau is not None:
-                x_data[datafile_index].append(corrected_c4_wavelength if wavelength else corrected_c4_redshift if redshift else corrected_c4_redshift * speed_of_light_kms)
-                flux_data[datafile_index].append(np.exp(-10**corrected_c4_tau))
-                labels[datafile_index].append("C IV" if not compare_corrections else "C IV (corrected)")
-                colours[datafile_index].append("blue")
-                linestyles[datafile_index].append("-")
-                alphas[datafile_index].append(1.0)
-            if uncorrected_c4_tau is not None:
-                x_data[datafile_index].append(uncorrected_c4_wavelength if wavelength else uncorrected_c4_redshift if redshift else uncorrected_c4_redshift * speed_of_light_kms)
-                flux_data[datafile_index].append(np.exp(-10**uncorrected_c4_tau))
-                labels[datafile_index].append("C IV" if not compare_corrections else "C IV (raw)")
-                colours[datafile_index].append("blue")
-                linestyles[datafile_index].append("--" if compare_corrections else "-")
-                alphas[datafile_index].append(1.0)
-            if corrected_o6_tau is not None:
-                x_data[datafile_index].append(corrected_o6_wavelength if wavelength else corrected_o6_redshift if redshift else corrected_o6_redshift * speed_of_light_kms)
-                flux_data[datafile_index].append(np.exp(-10**corrected_o6_tau))
-                labels[datafile_index].append("O VI" if not compare_corrections else "O VI (corrected)")
-                colours[datafile_index].append("red")
-                linestyles[datafile_index].append("-")
-                alphas[datafile_index].append(1.0)
-            if uncorrected_o6_tau is not None:
-                x_data[datafile_index].append(uncorrected_o6_wavelength if wavelength else uncorrected_o6_redshift if redshift else uncorrected_o6_redshift * speed_of_light_kms)
-                flux_data[datafile_index].append(np.exp(-10**uncorrected_o6_tau))
-                labels[datafile_index].append("O VI" if not compare_corrections else "O VI (raw)")
-                colours[datafile_index].append("red")
-                linestyles[datafile_index].append("--" if compare_corrections else "-")
-                alphas[datafile_index].append(1.0)
+                recover_o6(uncorrected_h1_non_dla_masked_spectrum_object, apply_recomended_corrections = True)
+                recover_o6(corrected_h1_non_dla_masked_spectrum_object, apply_recomended_corrections = True)
+
+                o6_wavelength = corrected_h1_non_dla_masked_spectrum_object.o6_data.lambdaa
+                o6_redshift = corrected_h1_non_dla_masked_spectrum_object.o6_data.z
+
+                uncorrected_hydrogen_uncorrected_o6_tau = uncorrected_h1_non_dla_masked_spectrum_object.o6_data.tau
+                uncorrected_hydrogen_corrected_o6_tau = uncorrected_h1_non_dla_masked_spectrum_object.o6_data.tau_rec
+                corrected_hydrogen_uncorrected_o6_tau = corrected_h1_non_dla_masked_spectrum_object.o6_data.tau
+                corrected_o6_tau = corrected_h1_non_dla_masked_spectrum_object.o6_data.tau_rec
+                
+                if Settings.debug:
+                    Console.print_debug(ArrayVisuliser.arrange(2, [
+                        uncorrected_hydrogen_uncorrected_o6_tau, uncorrected_hydrogen_corrected_o6_tau,
+                        corrected_hydrogen_uncorrected_o6_tau,   corrected_o6_tau
+                                                                    ],
+                                                                    [
+                        "No H I, No O VI",   "No H I, With O VI",
+                        "With H I, No O VI", "With H I, With O VI"
+                                                                    ]).render())
+                    assert (uncorrected_hydrogen_uncorrected_o6_tau == corrected_hydrogen_uncorrected_o6_tau).all(), "H I correction had an affect on the recovery of tau_(O VI)."
+                    assert (uncorrected_hydrogen_corrected_o6_tau   == corrected_o6_tau).all(),                      "H I correction had an affect on the recovery of tau_(O VI)."
+
+            if h1:
+                if compare_corrections:
+                        x_data[datafile_index].extend([h1_wavelength if wavelength else h1_redshift if redshift else h1_redshift * speed_of_light_kms] * 4)
+                        colours[datafile_index].extend(["black", "blue", "yellow", "orange"])
+                        alphas[datafile_index].extend([1.0] * 4)
+
+                        flux_data[datafile_index].append(np.exp(-10**uncorrected_hydrogen_uncorrected_h1_tau))
+                        labels[datafile_index].append("H I (raw)")
+                        linestyles[datafile_index].append("-")
+
+                        flux_data[datafile_index].append(np.exp(-10**uncorrected_hydrogen_corrected_h1_tau))
+                        labels[datafile_index].append("H I (corrected, corrected disabled)")
+                        linestyles[datafile_index].append("--")
+
+                        flux_data[datafile_index].append(np.exp(-10**corrected_hydrogen_uncorrected_h1_tau))
+                        labels[datafile_index].append("H I (raw, correction enabled)")
+                        linestyles[datafile_index].append("-.")
+
+                        flux_data[datafile_index].append(np.exp(-10**corrected_h1_tau))
+                        labels[datafile_index].append("H I (corrected)")
+                        linestyles[datafile_index].append(":")
+
+                else:
+                    x_data[datafile_index].append(h1_wavelength if wavelength else h1_redshift if redshift else h1_redshift * speed_of_light_kms)
+                    colours[datafile_index].append("black")
+                    linestyles[datafile_index].append("-")
+                    alphas[datafile_index].append(1.0)
+                    
+                    if no_h1_corrections:
+                        flux_data[datafile_index].append(np.exp(-10**uncorrected_hydrogen_uncorrected_h1_tau)) # same as corrected_hydrogen_uncorrected_h1_tau
+                        labels[datafile_index].append("Ly $\\alpha$")
+                        Console.print_verbose_info(f"H I (uncorrected): got {len(x_data[datafile_index][-1])} pixels.")
+                        if Settings.debug: Console.print_debug("H I (uncorrected):\n" + ArrayVisuliser([x_data[datafile_index][-1], flux_data[datafile_index][-1]], ["Wavelengths", "Fluxes"]).render(show_plus_minus_1 = True))
+                    else:
+                        flux_data[datafile_index].append(np.exp(-10**corrected_h1_tau))
+                        labels[datafile_index].append("H I")
+                        Console.print_verbose_info(f"H I (corrected): got {len(x_data[datafile_index][-1])} pixels.")
+                        if Settings.debug: Console.print_debug("H I (corrected):\n" + ArrayVisuliser([x_data[datafile_index][-1], flux_data[datafile_index][-1]], ["Wavelengths", "Fluxes"]).render(show_plus_minus_1 = True))
+
+            if c4:
+                if compare_corrections:
+                        x_data[datafile_index].extend([c4_wavelength if wavelength else c4_redshift if redshift else c4_redshift * speed_of_light_kms] * (4 if Settings.debug else 2))
+                        colours[datafile_index].extend(["black", "blue", "yellow", "orange"] if Settings.debug else ["black", "orange"])
+                        alphas[datafile_index].extend([1.0] * (4 if Settings.debug else 2))
+
+                        #x_data[datafile_index].append(c4_wavelength if wavelength else c4_redshift if redshift else c4_redshift * speed_of_light_kms)
+                        flux_data[datafile_index].append(np.exp(-10**uncorrected_hydrogen_uncorrected_c4_tau))
+                        labels[datafile_index].append("C IV (raw, without corrected H I)")
+                        linestyles[datafile_index].append("-")
+
+                        if Settings.debug:
+                            flux_data[datafile_index].append(np.exp(-10**uncorrected_hydrogen_corrected_c4_tau))
+                            labels[datafile_index].append("C IV (corrected, without corrected H I)")
+                            linestyles[datafile_index].append("--")
+
+                            flux_data[datafile_index].append(np.exp(-10**corrected_hydrogen_uncorrected_c4_tau))
+                            labels[datafile_index].append("C IV (raw, with corrected H I)")
+                            linestyles[datafile_index].append("-.")
+
+                        flux_data[datafile_index].append(np.exp(-10**corrected_c4_tau))
+                        labels[datafile_index].append("C IV (corrected, with corrected H I)")
+                        linestyles[datafile_index].append(":"if Settings.debug else "-")
+
+                else:
+                    x_data[datafile_index].append(c4_wavelength if wavelength else c4_redshift if redshift else c4_redshift * speed_of_light_kms)
+                    colours[datafile_index].append("blue")
+                    linestyles[datafile_index].append("-")
+                    alphas[datafile_index].append(1.0)
+                    
+                    if no_h1_corrections and no_metal_corrections:
+                        flux_data[datafile_index].append(np.exp(-10**uncorrected_hydrogen_uncorrected_c4_tau))
+                        labels[datafile_index].append("C IV (raw, without corrected H I)")
+                        Console.print_verbose_info(f"C IV (uncorrected: raw): got {len(x_data[datafile_index][-1])} pixels.")
+                        if Settings.debug: Console.print_debug("C IV (uncorrected: raw):\n" + ArrayVisuliser([x_data[datafile_index][-1], flux_data[datafile_index][-1]], ["Wavelengths", "Fluxes"]).render(show_plus_minus_1 = True))
+                    elif no_h1_corrections and not no_metal_corrections:
+                        flux_data[datafile_index].append(np.exp(-10**uncorrected_hydrogen_corrected_c4_tau))
+                        labels[datafile_index].append("C IV (corrected, without corrected H I)")
+                        Console.print_verbose_info(f"C IV (corrected: H I uncorrected): got {len(x_data[datafile_index][-1])} pixels.")
+                        if Settings.debug: Console.print_debug("C IV (corrected: H I uncorrected):\n" + ArrayVisuliser([x_data[datafile_index][-1], flux_data[datafile_index][-1]], ["Wavelengths", "Fluxes"]).render(show_plus_minus_1 = True))
+                    elif not no_h1_corrections and no_metal_corrections:
+                        flux_data[datafile_index].append(np.exp(-10**uncorrected_hydrogen_corrected_c4_tau))
+                        labels[datafile_index].append("C IV (raw, with corrected H I)")
+                        Console.print_verbose_info(f"C IV (uncorrected: raw, H I corrected): got {len(x_data[datafile_index][-1])} pixels.")
+                        if Settings.debug: Console.print_debug("C IV (uncorrected: raw, H I corrected):\n" + ArrayVisuliser([x_data[datafile_index][-1], flux_data[datafile_index][-1]], ["Wavelengths", "Fluxes"]).render(show_plus_minus_1 = True))
+                    else:
+                        flux_data[datafile_index].append(np.exp(-10**corrected_c4_tau))
+                        labels[datafile_index].append("C IV (corrected, with corrected H I)")
+                        Console.print_verbose_info(f"C IV (corrected: default): got {len(x_data[datafile_index][-1])} pixels.")
+                        if Settings.debug: Console.print_debug("C IV (corrected: default):\n" + ArrayVisuliser([x_data[datafile_index][-1], flux_data[datafile_index][-1]], ["Wavelengths", "Fluxes"]).render(show_plus_minus_1 = True))
+
+            if c4:
+                if compare_corrections:
+                        x_data[datafile_index].extend([si4_wavelength if wavelength else si4_redshift if redshift else si4_redshift * speed_of_light_kms] * (4 if Settings.debug else 2))
+                        colours[datafile_index].extend(["black", "blue", "yellow", "orange"] if Settings.debug else ["black", "orange"])
+                        alphas[datafile_index].extend([1.0] * (4 if Settings.debug else 2))
+
+                        #x_data[datafile_index].append(si4_wavelength if wavelength else si4_redshift if redshift else si4_redshift * speed_of_light_kms)
+                        flux_data[datafile_index].append(np.exp(-10**uncorrected_hydrogen_uncorrected_si4_tau))
+                        labels[datafile_index].append("Si IV (raw, without corrected H I)")
+                        linestyles[datafile_index].append("-")
+
+                        if Settings.debug:
+                            flux_data[datafile_index].append(np.exp(-10**uncorrected_hydrogen_corrected_si4_tau))
+                            labels[datafile_index].append("Si IV (corrected, without corrected H I)")
+                            linestyles[datafile_index].append("--")
+
+                            flux_data[datafile_index].append(np.exp(-10**corrected_hydrogen_uncorrected_si4_tau))
+                            labels[datafile_index].append("Si IV (raw, with corrected H I)")
+                            linestyles[datafile_index].append("-.")
+
+                        flux_data[datafile_index].append(np.exp(-10**corrected_si4_tau))
+                        labels[datafile_index].append("Si IV (corrected, with corrected H I)")
+                        linestyles[datafile_index].append(":"if Settings.debug else "-")
+
+                else:
+                    x_data[datafile_index].append(si4_wavelength if wavelength else si4_redshift if redshift else si4_redshift * speed_of_light_kms)
+                    colours[datafile_index].append("yellow")
+                    linestyles[datafile_index].append("-")
+                    alphas[datafile_index].append(1.0)
+                    
+                    if no_h1_corrections and no_metal_corrections:
+                        flux_data[datafile_index].append(np.exp(-10**uncorrected_hydrogen_uncorrected_si4_tau))
+                        labels[datafile_index].append("Si IV (raw, without corrected H I)")
+                        Console.print_verbose_info(f"Si IV (uncorrected: raw): got {len(x_data[datafile_index][-1])} pixels.")
+                        if Settings.debug: Console.print_debug("Si IV (uncorrected: raw):\n" + ArrayVisuliser([x_data[datafile_index][-1], flux_data[datafile_index][-1]], ["Wavelengths", "Fluxes"]).render(show_plus_minus_1 = True))
+                    elif no_h1_corrections and not no_metal_corrections:
+                        flux_data[datafile_index].append(np.exp(-10**uncorrected_hydrogen_corrected_si4_tau))
+                        labels[datafile_index].append("Si IV (corrected, without corrected H I)")
+                        Console.print_verbose_info(f"Si IV (corrected: H I uncorrected): got {len(x_data[datafile_index][-1])} pixels.")
+                        if Settings.debug: Console.print_debug("Si IV (corrected: H I uncorrected):\n" + ArrayVisuliser([x_data[datafile_index][-1], flux_data[datafile_index][-1]], ["Wavelengths", "Fluxes"]).render(show_plus_minus_1 = True))
+                    elif not no_h1_corrections and no_metal_corrections:
+                        flux_data[datafile_index].append(np.exp(-10**uncorrected_hydrogen_corrected_si4_tau))
+                        labels[datafile_index].append("Si IV (raw, with corrected H I)")
+                        Console.print_verbose_info(f"Si IV (uncorrected: raw, H I corrected): got {len(x_data[datafile_index][-1])} pixels.")
+                        if Settings.debug: Console.print_debug("Si IV (uncorrected: raw, H I corrected):\n" + ArrayVisuliser([x_data[datafile_index][-1], flux_data[datafile_index][-1]], ["Wavelengths", "Fluxes"]).render(show_plus_minus_1 = True))
+                    else:
+                        flux_data[datafile_index].append(np.exp(-10**corrected_si4_tau))
+                        labels[datafile_index].append("Si IV (corrected, with corrected H I)")
+                        Console.print_verbose_info(f"Si IV (corrected: default): got {len(x_data[datafile_index][-1])} pixels.")
+                        if Settings.debug: Console.print_debug("Si IV (corrected: default):\n" + ArrayVisuliser([x_data[datafile_index][-1], flux_data[datafile_index][-1]], ["Wavelengths", "Fluxes"]).render(show_plus_minus_1 = True))
+
+            if o6:
+                if compare_corrections:
+                        x_data[datafile_index].extend([o6_wavelength if wavelength else o6_redshift if redshift else o6_redshift * speed_of_light_kms] * (4 if Settings.debug else 2))
+                        colours[datafile_index].extend(["black", "blue", "yellow", "orange"] if Settings.debug else ["black", "orange"])
+                        alphas[datafile_index].extend([1.0] * (4 if Settings.debug else 2))
+
+                        flux_data[datafile_index].append(np.exp(-10**uncorrected_hydrogen_uncorrected_o6_tau))
+                        labels[datafile_index].append("O VI (raw, without corrected H I)")
+                        linestyles[datafile_index].append("-")
+
+                        if Settings.debug:
+                            flux_data[datafile_index].append(np.exp(-10**uncorrected_hydrogen_corrected_o6_tau))
+                            labels[datafile_index].append("O VI (corrected, without corrected H I)")
+                            linestyles[datafile_index].append("--")
+
+                            flux_data[datafile_index].append(np.exp(-10**corrected_hydrogen_uncorrected_o6_tau))
+                            labels[datafile_index].append("O VI (raw, with corrected H I)")
+                            linestyles[datafile_index].append("-.")
+
+                        flux_data[datafile_index].append(np.exp(-10**corrected_o6_tau))
+                        labels[datafile_index].append("O VI (corrected, with corrected H I)")
+                        linestyles[datafile_index].append(":" if Settings.debug else "-")
+
+                else:
+                    x_data[datafile_index].append(o6_wavelength if wavelength else o6_redshift if redshift else o6_redshift * speed_of_light_kms)
+                    colours[datafile_index].append("red")
+                    linestyles[datafile_index].append("-")
+                    alphas[datafile_index].append(1.0)
+                    
+                    if no_h1_corrections and no_metal_corrections:
+                        flux_data[datafile_index].append(np.exp(-10**uncorrected_hydrogen_uncorrected_o6_tau))
+                        labels[datafile_index].append("O VI (raw, without corrected H I)")
+                        Console.print_verbose_info(f"O VI (uncorrected: raw): got {len(x_data[datafile_index][-1])} pixels.")
+                        if Settings.debug: Console.print_debug("O VI (uncorrected: raw):\n" + ArrayVisuliser([x_data[datafile_index][-1], flux_data[datafile_index][-1]], ["Wavelengths", "Fluxes"]).render(show_plus_minus_1 = True))
+                    elif no_h1_corrections and not no_metal_corrections:
+                        flux_data[datafile_index].append(np.exp(-10**uncorrected_hydrogen_corrected_o6_tau))
+                        labels[datafile_index].append("O VI (corrected, without corrected H I)")
+                        Console.print_verbose_info(f"O VI (corrected: H I uncorrected): got {len(x_data[datafile_index][-1])} pixels.")
+                        if Settings.debug: Console.print_debug("O VI (corrected: H I uncorrected):\n" + ArrayVisuliser([x_data[datafile_index][-1], flux_data[datafile_index][-1]], ["Wavelengths", "Fluxes"]).render(show_plus_minus_1 = True))
+                    elif not no_h1_corrections and no_metal_corrections:
+                        flux_data[datafile_index].append(np.exp(-10**uncorrected_hydrogen_corrected_o6_tau))
+                        labels[datafile_index].append("O VI (raw, with corrected H I)")
+                        Console.print_verbose_info(f"O VI (uncorrected: raw, H I corrected): got {len(x_data[datafile_index][-1])} pixels.")
+                        if Settings.debug: Console.print_debug("O VI (uncorrected: raw, H I corrected):\n" + ArrayVisuliser([x_data[datafile_index][-1], flux_data[datafile_index][-1]], ["Wavelengths", "Fluxes"]).render(show_plus_minus_1 = True))
+                    else:
+                        flux_data[datafile_index].append(np.exp(-10**corrected_o6_tau))
+                        labels[datafile_index].append("O VI (corrected, with corrected H I)")
+                        Console.print_verbose_info(f"O VI (corrected: default): got {len(x_data[datafile_index][-1])} pixels.")
+                        if Settings.debug: Console.print_debug("O VI (corrected: default):\n" + ArrayVisuliser([x_data[datafile_index][-1], flux_data[datafile_index][-1]], ["Wavelengths", "Fluxes"]).render(show_plus_minus_1 = True))
 
         else:
             if h1:
+                Console.print_verbose_info("Loading H I strongest transition opticaldepths...", end = "")
                 x_data[datafile_index].append(data["Wavelength_Ang"][:])
                 flux_data[datafile_index].append(np.exp(-selected_spectrum_data["h1/RedshiftSpaceOpticalDepthOfStrongestTransition"][:]))
                 labels[datafile_index].append("H I")
                 colours[datafile_index].append("black")
                 linestyles[datafile_index].append("-")
                 alphas[datafile_index].append(1.0)
+                print("done")
+                Console.print_verbose_info(f"H I (RSODOST): got {len(x_data[datafile_index][-1])} pixels.")
+                Console.print_debug("H I (RSODOST):\n" + ArrayVisuliser([x_data[datafile_index][-1], flux_data[datafile_index][-1]], ["Wavelengths", "Fluxes"]).render(show_plus_minus_1 = True))
             if c4:
+                Console.print_verbose_info("Loading C IV strongest transition opticaldepths...", end = "")
                 x_data[datafile_index].append(data["Wavelength_Ang"][:])
                 flux_data[datafile_index].append(np.exp(-selected_spectrum_data["c4/RedshiftSpaceOpticalDepthOfStrongestTransition"][:]))
                 labels[datafile_index].append("C IV")
                 colours[datafile_index].append("blue")
                 linestyles[datafile_index].append("-")
                 alphas[datafile_index].append(1.0)
+                print("done")
+                Console.print_verbose_info(f"C IV (RSODOST): got {len(x_data[datafile_index][-1])} pixels.")
+                Console.print_debug("C IV  (RSODOST):\n" + ArrayVisuliser([x_data[datafile_index][-1], flux_data[datafile_index][-1]], ["Wavelengths", "Fluxes"]).render(show_plus_minus_1 = True))
             if o6:
+                Console.print_verbose_info("Loading O VI strongest transition opticaldepths...", end = "")
                 x_data[datafile_index].append(data["Wavelength_Ang"][:])
                 flux_data[datafile_index].append(np.exp(-selected_spectrum_data["o6/RedshiftSpaceOpticalDepthOfStrongestTransition"][:]))
                 labels[datafile_index].append("O VI")
                 colours[datafile_index].append("red")
                 linestyles[datafile_index].append("-")
                 alphas[datafile_index].append(1.0)
+                print("done")
+                Console.print_verbose_info(f"O VI (RSODOST): got {len(x_data[datafile_index][-1])} pixels.")
+                Console.print_debug("O VI  (RSODOST):\n" + ArrayVisuliser([x_data[datafile_index][-1], flux_data[datafile_index][-1]], ["Wavelengths", "Fluxes"]).render(show_plus_minus_1 = True))
 
     # Plot results
 
@@ -259,29 +558,29 @@ def __main(
             dataset_alphas = alphas[0],
             x_min = x_min,
             x_max = x_max,
+            y_min = y_min,
+            y_max = y_max,
             title = title,
             show = output_file is None
         )
 
     else:
         avalible_line_styles = ("-", "--", "-.", ":")
-        figure, axis = None, None
-        for datafile_index in range(len(datafiles)):
-            figure, axis = plotting.spectrum(
-                pixel_x_values = x_data[datafile_index],
-                pixel_fluxes = flux_data[datafile_index],
-                spectrum_type = plotting.PlottedSpectrumType.wavelength if wavelength else plotting.PlottedSpectrumType.velocity if velocity else plotting.PlottedSpectrumType.redshift,
-                dataset_labels = [datafile_names[datafile_index]],
-                dataset_colours = colours[datafile_index],
-                dataset_linestyles = [avalible_line_styles[datafile_index % len(avalible_line_styles)]],
-                dataset_alphas = alphas[datafile_index],
-                x_min = x_min,
-                x_max = x_max,
-                title = title,
-                show = (output_file is None) and datafile_index + 1 == len(datafiles),
-                figure = figure,
-                axis = axis
-            )
+        figure, axis = plotting.spectrum(
+            pixel_x_values = [x_data[datafile_index][0] for datafile_index in range(len(datafiles))],
+            pixel_fluxes = [flux_data[datafile_index][0] for datafile_index in range(len(datafiles))],
+            spectrum_type = plotting.PlottedSpectrumType.wavelength if wavelength else plotting.PlottedSpectrumType.velocity if velocity else plotting.PlottedSpectrumType.redshift,
+            dataset_labels = datafile_names,
+            dataset_colours = [colours[datafile_index][0] for datafile_index in range(len(datafiles))],
+            dataset_linestyles = [avalible_line_styles[datafile_index % len(avalible_line_styles)] for datafile_index in range(len(datafiles))],
+            dataset_alphas = [alphas[datafile_index][0] for datafile_index in range(len(datafiles))],
+            x_min = x_min,
+            x_max = x_max,
+            y_min = y_min,
+            y_max = y_max,
+            title = title,
+            show = output_file is None
+        )
 
     # Decide what to do with the plot
 
@@ -289,24 +588,24 @@ def __main(
         figure.savefig(output_file)
 
 def main():
-    script_wrapper = ScriptWrapper(
+    ScriptWrapper(
         command = "pod-plot-specwizard-spectrum",
         authors = [ScriptWrapper.AuthorInfomation(given_name = "Christopher", family_name = "Rowe", email = "contact@cjrrowe.com", website_url = "cjrrowe.com")],
         version = "1.0.0",
-        edit_date = datetime.date(2024, 5, 26),
+        edit_date = datetime.date(2024, 6, 4),
         description = "Plots a spectrum from data in SpecWizard output files.",
         dependancies = ["podpy-refocused"],
-        usage_paramiter_examples = None,
+        usage_paramiter_examples = [f"-i ./{DEFAULT_SPECWIZARD_FILENAME} --c4 --wavelength --x-min 6201 --x-max 6209 --y-min 0.97 --y-max 1.0005 --title \"S/N = 100\"'"],
         parameters = [
-            ScriptWrapper.OptionalParam[str](
+            ScriptWrapper.OptionalParam[List[str]](
                 "datafiles", "i",
-                description = "SpecWizard output file(s).\nDefaults to a file in the current working directory named \"LongSpectrum.hdf5\".\nSpecify as a semicolon seperated list to compare data between files.",
-                default_value = ["./LongSpectrum.hdf5"],
+                description = f"SpecWizard output file(s).\nDefaults to a file in the current working directory named \"{DEFAULT_SPECWIZARD_FILENAME}\".\nSpecify as a semicolon seperated list to compare data between files.\nValid directories may be used, assuming the filename is the default.",
+                default_value = [os.path.join(".", DEFAULT_SPECWIZARD_FILENAME)],
                 conversion_function = ScriptWrapper.make_list_converter(";")
             ),
-            ScriptWrapper.OptionalParam[str](
+            ScriptWrapper.OptionalParam[List[str]](
                 "datafile-names",
-                description = "Display names for each input file.\Redundant if only one data file is specified.\nSpecify a number of names as a semicolon seperated list.",
+                description = "Display names for each input file.\nRedundant if only one data file is specified.\nSpecify a number of names as a semicolon seperated list.",
                 conversion_function = ScriptWrapper.make_list_converter(";"),
                 requirements = ["datafiles"]
             ),
@@ -314,7 +613,7 @@ def main():
                 "raw",
                 description = "Plot the raw flux.\nOnly supported for --wavelength",
                 conflicts = ["velocity", "redshift"],
-                requirements = ["wavelength"]
+#                requirements = ["wavelength"]#TODO: fix QuasarCode bug
             ),
             ScriptWrapper.Flag(
                 "h1",
@@ -325,10 +624,14 @@ def main():
                 description = "Plot fluxes from C IV."
             ),
             ScriptWrapper.Flag(
+                "si4",
+                description = "Plot fluxes from Si IV."
+            ),
+            ScriptWrapper.Flag(
                 "o6",
                 description = "Plot fluxes from O VI."
             ),
-            ScriptWrapper.OptionalParam[int](
+            ScriptWrapper.OptionalParam[List[int]](
                 "target-spectra", "s",
                 description = "Index(es) of the spectrum to plot.\nDefault is 0.\nSpecifying a single value for multiple data files will check for the same index in all files.\nSpecify as a semicolon seperated list if a different sightline is desired frome each file.",
                 conversion_function = ScriptWrapper.make_list_converter(";", int),
@@ -346,7 +649,7 @@ def main():
             ),
             ScriptWrapper.Flag(
                 "redshift", "r",
-                description = "Use velocity pixels.",
+                description = "Use redshift pixels.",
                 conflicts = ["raw", "wavelength", "velocity"]
             ),
             ScriptWrapper.OptionalParam[float | None](
@@ -357,6 +660,16 @@ def main():
             ScriptWrapper.OptionalParam[float | None](
                 "x-max",
                 description = "Maximum X value to display.",
+                conversion_function = float
+            ),
+            ScriptWrapper.OptionalParam[float | None](
+                "y-min",
+                description = "Minimum Y value to display.",
+                conversion_function = float
+            ),
+            ScriptWrapper.OptionalParam[float | None](
+                "y-max",
+                description = "Maximum Y value to display.",
                 conversion_function = float
             ),
             ScriptWrapper.Flag(
@@ -388,32 +701,4 @@ def main():
                 description = "Name of the file to save plot as.\nLeave unset to show the plot in a matplotlib interactive window."
             ),
         ]
-    )
-#    script_wrapper = ScriptWrapper("pod-plot-specwizard-spectrum",
-#                                   "Christopher Rowe",
-#                                   "1.0.0",
-#                                   "26/05/2024",
-#                                   "Plots a spectrum from data in SpecWizard output files.",
-#                                   ["podpy-refocused"],
-#                                   [],
-#                                   [],
-#                                   [["datafile",                "i",    "SpecWizard output file. Defaults to a file in the current working directory named \"LongSpectrum.hdf5\".", False, False, None, "./LongSpectrum.hdf5"],
-#                                    ["raw",                     None,   "Plot the raw flux.\nOnly supported for --wavelength", False, True, None, None, ["velocity", "redshift"]],
-#                                    ["h1",                      None,   "Plot fluxes from H I.", False, True, None, None],
-#                                    ["c4",                      None,   "Plot fluxes from C IV.", False, True, None, None],
-#                                    ["o6",                      None,   "Plot fluxes from O VI.", False, True, None, None],
-#                                    ["target-spectrum",         "s",    "Index of the spectrum to plot.\nDefault is 0.", False, False, float, 0],
-#                                    ["wavelength",              "w",    "Use wavelength pixels.", False, True, None, None, ["velocity", "redshift"]],
-#                                    ["velocity",                None,    "Use velocity pixels.", False, True, None, None, ["raw", "wavelength", "redshift"]],
-#                                    ["redshift",                "r",    "Use redshift pixels.", False, True, None, None, ["raw", "wavelength", "velocity"]],
-#                                    ["x-min",                   None,   "Minimum log10-space value of tau_HI to consider.\nDefault is -1.0", False, False, float, None],
-#                                    ["x-max",                   None,   "Maximum log10-space value of tau_HI to consider.\nDefault is 2.5", False, False, float,  None],
-#                                    ["no-h1-corrections",       None,   "Make no alterations to saturated H I pixels.", False, True, None, None, ["compare-corrections", "use-RSODOST-field"]],
-#                                    ["no-metal-corrections",    None,   "Make no alterations to saturated metal pixels.", False, True, None, None, ["compare-corrections", "use-RSODOST-field"]],
-#                                    ["compare-corrections",     None,   "Plot comparison lines for all selected ions to show their un-corrected values.", False, True, None, None, ["no-h1-corrections", "no-metal-corrections", "use-RSODOST-field"]],
-#                                    ["use-RSODOST-field",       None,   "Get ion flux from the 'RedshiftSpaceOpticalDepthOfStrongestTransition' field.", False, True, None, None, ["no-h1-corrections", "no-metal-corrections", "compare-corrections"]],
-#                                    ["title",                   None,   "Optional plot title.", False, False, None, None],
-#                                    ["output-file",             "o",    "Name of the file to save plot as. Leave unset to show the plot in a matplotlib interactive window.", False, False, None, None]
-#                                   ])
-    
-    script_wrapper.run(__main)
+    ).run(__main)

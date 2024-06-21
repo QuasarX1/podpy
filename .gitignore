@@ -9,3 +9,6 @@ activate
 
 # Temp ignore for test data
 LongSpectrum.hdf5
+
+# Ignore for VSCode debugging configuration
+.vscode/launch.json

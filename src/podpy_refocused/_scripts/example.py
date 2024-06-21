@@ -17,15 +17,13 @@ are given in the documentation, which can be found using the help()
 command.  
 """
 
-import numpy as np
-import matplotlib.pyplot as plt
 import os
 import sys
 
-from .. import __file__ as __project_init_file
-from .. import _Spectrum as Spectrum
-from .._Pod import Pod
-from .._TauBinned import TauBinned
+import numpy as np
+import matplotlib.pyplot as plt
+
+from .. import KodiaqFits_Spectrum, Pod, TauBinned
 
 def main():
     if len(sys.argv) < 2:
@@ -68,7 +66,7 @@ def main():
 
     # Initialize Spectrum object, with option to manually mask bad regions as well
     # as DLAs. See Spectrum.Spectrum and Spectrum.Kodiaq for details.
-    spec = Spectrum.KodiaqFits(z_qso,
+    spec = KodiaqFits_Spectrum(z_qso,
                             object_name,
                             filepath = filepath,
                             mask_badreg = True,
@@ -89,7 +87,7 @@ def main():
 
 
     # For recovering OVI, it is best to unmask any DLAs in the Lya forest region
-    spec_nodlamask = Spectrum.KodiaqFits(z_qso,
+    spec_nodlamask = KodiaqFits_Spectrum(z_qso,
                                 object_name,
                                 filepath = filepath,
                                 mask_badreg = True,

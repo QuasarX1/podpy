@@ -9,10 +9,16 @@ Please contact the author (Monica Turner) at turnerm@mit.edu if you have
 any questions, comment or issues. 
 """
 
+from typing import TYPE_CHECKING, Tuple
+
 import numpy as np
 import scipy.interpolate as intp
+from QuasarCode import Settings, Console
 
 from . import _universe as un
+
+if TYPE_CHECKING:
+    from ._Spectrum import Spectrum
 
 class Pod:
     """
@@ -58,21 +64,45 @@ class Pod:
     FLAG_NEGTAU = 4
     FLAG_REP = 8
 
-    def __init__(self):
+    def __init__(
+                    self,
+                    lambda_Z: float,
+                    g: float,
+                    spectrum: "Spectrum",
+                    nsigma_sat: float,
+                    ion: str
+                ):
+
+        self.spectrum: Spectrum = spectrum
+        self.g: float = g
+        self.lambda_Z: float = lambda_Z
+        self.mean_signal_to_noise: float = None
+
+        self.ion: str = ion
+        self.lambdaa: np.ndarray = None
+        self.z: np.ndarray = None
+        self.flux: np.ndarray = None
+        self.tau: np.ndarray = None
+        self.tau_rec: np.ndarray = None
+        self.sigma_noise: np.ndarray = None
+        self.flag: np.ndarray = None
+        self.bad_pixel: np.ndarray = None
+        self.nsigma_sat: float = nsigma_sat
+
         self._get_z() 
         self._get_flux()
         self._get_tau()
         try:
             self.z[0]
         except IndexError:
-            print("ERROR: No wavelength coverage for HI Lya")
-        # 
-        print("*** Finding tau_rec for", self.ion, "***")
-        print("z range:", self.z[0], self.z[-1])
-        print("lambda range:", self.lambdaa[0], self.lambdaa[-1])
-        print("Total number of pixels:", len(self.lambdaa))
-        print("After removing bad pixels from spectrum:", len(np.where(
-            self.flag % 2 == 0)[0]))
+            Console.print_error("No wavelength coverage for HI Lya")
+
+        Console.print_verbose_info(f"""\
+*** Finding tau_rec for {self.ion} ***
+z range: {self.z[0]} {self.z[-1]}
+lambda range: {self.lambdaa[0]} {self.lambdaa[-1]}
+Total number of pixels: {len(self.lambdaa)}
+After removing bad pixels from spectrum: {len(np.where(self.flag % 2 == 0)[0])}""")
             
 
     def _get_fiducial_z(self):
@@ -81,21 +111,21 @@ class Pod:
         z_beta = (1.0 + z_qso) * (un.lambda_h1[1]) / (un.lambda_h1[0]) - 1.0
         z_max = z_qso - (1. + z_qso) * Pod.DIST_QSO / un.c
         idx_lya = np.where((z > z_beta) & (z < z_max))
-        return z[idx_lya]	
+        return z[idx_lya]
 
     def _get_tau(self):
         negative_flux = self.flux <= 0
         saturated = self.flux <= self.nsigma_sat * self.sigma_noise
-        self.tau = np.where(negative_flux, Pod.TAU_MAX, -np.log(self.flux))	
-        self.tau[self.bad_pixel] = Pod.TAU_MIN	
-        # tau_rec takes saturation and negative pixels 
+        self.tau = np.where(negative_flux, Pod.TAU_MAX, -np.log(self.flux))
+        self.tau[self.bad_pixel] = Pod.TAU_MIN
+        # tau_rec takes saturation and negative pixels
         self.tau_rec = self.tau.copy()
-        self.tau_rec[saturated] =  Pod.TAU_MAX	
+        self.tau_rec[saturated] =  Pod.TAU_MAX
         negative_tau = np.where(self.tau_rec <= 0)
         self.tau_rec[negative_tau] =  Pod.TAU_MIN
-        # make a flag array and flag bad, saturated, negative pixels 
-        self.flag = np.zeros(len(self.z), dtype = 'int')	
-        self.flag[self.bad_pixel] += Pod.FLAG_DISCARD 
+        # make a flag array and flag bad, saturated, negative pixels
+        self.flag = np.zeros(len(self.z), dtype = 'int')
+        self.flag[self.bad_pixel] += Pod.FLAG_DISCARD
         self.flag[saturated] += Pod.FLAG_SAT
         self.flag[negative_tau] += Pod.FLAG_NEGTAU
         # calc s/n of the recovered region
@@ -107,7 +137,7 @@ class Pod:
         index_right = lambdaa.searchsorted(lambda_search, side = 'right')
         index_left = index_right - 1
         near_bad_pixel = (flag[index_right] % 2 == 1) | (flag[index_left] % 2 == 1)
-        return(near_bad_pixel)
+        return near_bad_pixel
 
     @staticmethod
     def _get_z_range_from_ion(z_min, z_max, ion, lambda_Z, z_qso):
@@ -179,19 +209,29 @@ class LymanAlpha(Pod):
         Output the log of the optical depths.	
     """
     
-    def __init__(self, 
-            spectrum, 
-            n_higher_order = 15,
-            nsigma_sat = Pod.N_SIGMA,
-            correct_contam = 1,
-            output_log = True 
-            ):
-        self.lambda_Z = un.lambda_h1
-        self.g = un.g_h1
-        self.spectrum = spectrum
-        self.nsigma_sat = nsigma_sat
-        self.ion = "h1"
-        Pod.__init__(self)
+    def __init__(
+                    self,
+                    spectrum,
+                    n_higher_order = 15,
+                    nsigma_sat = Pod.N_SIGMA,
+                    correct_contam = 1,
+                    output_log = True
+                ) -> None:
+        self._raw_pixel_filter: np.ndarray = None
+        Pod.__init__(
+            self,
+            lambda_Z = un.lambda_h1,
+            g = un.g_h1,
+            spectrum = spectrum,
+            nsigma_sat = nsigma_sat,
+            ion = "h1"
+        )
+#        self.lambda_Z = un.lambda_h1
+#        self.g = un.g_h1
+#        self.spectrum = spectrum
+#        self.nsigma_sat = nsigma_sat
+#        self.ion = "h1"
+#        Pod.__init__(self)
         # Keep track of higher order line parameters
         index_contam = np.zeros(len(self.lambdaa))	
         tau_higher_order_full_flag = 1E4
@@ -274,22 +314,33 @@ class LymanAlpha(Pod):
             self.index_contam = index_contam
             if correct_contam == 1:
                 self.flag[np.where(index_contam == 1)] += Pod.FLAG_DISCARD
-        self._print_stats()
+        if Settings.verbose: self._print_stats()
         if output_log:
             self._log_all_taus()
         else:
             self.tau[self.tau <= 0] = Pod.TAU_MIN 
             self.tau_rec[self.tau_rec <= 0] = Pod.TAU_MIN 
-        print("*** Done ***\n")
+        Console.print_verbose_info("*** Done ***\n")
+
+    @property
+    def raw_pixel_filter(self):
+        return self._raw_pixel_filter
+    
+    def filter_pixel_data(self, pixel_data: np.ndarray):
+        if len(pixel_data) != len(self._raw_pixel_filter):
+            raise ValueError(f"Attempted to filter pixel array with shape {len(pixel_data)} but Pod object was created from a spectrum with {len(self._raw_pixel_filter)} pixels.")
+        return pixel_data[self._raw_pixel_filter]
     
     def _get_z(self):
         self.z = self._get_fiducial_z()
 
     def _get_flux(self):
         lambda_rest = self.lambda_Z[0]
-        lambdaa = lambda_rest * (1.0 + self.z) 
-        self.idx = np.where((self.spectrum.lambdaa >= lambdaa[0]) &
-            (self.spectrum.lambdaa <= lambdaa[-1]))
+        lambdaa = lambda_rest * (1.0 + self.z)
+        self._raw_pixel_filter = (self.spectrum.lambdaa >= lambdaa[0]) & (self.spectrum.lambdaa <= lambdaa[-1])
+#        self.idx = np.where((self.spectrum.lambdaa >= lambdaa[0]) &
+#            (self.spectrum.lambdaa <= lambdaa[-1]))
+        self.idx = np.where(self._raw_pixel_filter)
         self.lambdaa = self.spectrum.lambdaa[self.idx]
         self.flux = self.spectrum.flux[self.idx]
         self.sigma_noise = self.spectrum.sigma_noise[self.idx]
@@ -297,11 +348,10 @@ class LymanAlpha(Pod):
     
 
     def _print_stats(self):
-        print("Pixels analyzed:", len(self.tau))
-        print("Number of saturated pixels:", len(np.where((self.flag == Pod.FLAG_SAT) | 
-        (self.flag == Pod.FLAG_SAT + Pod.FLAG_REP))[0]))
-        print("Number of these pixels that have lower optical depth in higher order lines:")
-        print(len(np.where(self.flag == Pod.FLAG_SAT + Pod.FLAG_REP)[0]))
+        Console.print_info("Pixels analyzed:", len(self.tau))
+        Console.print_info("Number of saturated pixels:", len(np.where((self.flag == Pod.FLAG_SAT) | (self.flag == Pod.FLAG_SAT + Pod.FLAG_REP))[0]))
+        Console.print_info("Number of these pixels that have lower optical depth in higher order lines:")
+        Console.print_info(len(np.where(self.flag == Pod.FLAG_SAT + Pod.FLAG_REP)[0]))
 
 class Metal(Pod):
     
@@ -334,28 +384,39 @@ class Metal(Pod):
         Output the logs of the optical depths.	
     """
 
-    def __init__(self, 
-            spectrum, 
-            ion, 
-            correct_h1, 
-            correct_self, 
-            take_min_doublet, 
-            nsigma_sat = Pod.N_SIGMA,
-            nsigma_dm = Pod.N_SIGMA,
-            nsigma_contam = Pod.N_SIGMA,
-            n_higher_order = 5,
-            output_log = True, 
-            ):
-        self.spectrum = spectrum
-        self.ion = ion
-        self.nsigma_sat = nsigma_sat
-        self.lambda_Z, self.g = self._get_ion_properties(self.ion)
-        Pod.__init__(self)
-        if take_min_doublet: 
+    def __init__(
+                    self,
+                    spectrum,
+                    ion,
+                    correct_h1,
+                    correct_self,
+                    take_min_doublet,
+                    nsigma_sat = Pod.N_SIGMA,
+                    nsigma_dm = Pod.N_SIGMA,
+                    nsigma_contam = Pod.N_SIGMA,
+                    n_higher_order = 5,
+                    output_log = True
+                ) -> None:
+        lambda_Z, g = self._get_ion_properties(ion)
+        Pod.__init__(
+            self,
+            lambda_Z = lambda_Z,
+            g = g,
+            spectrum = spectrum,
+            nsigma_sat = nsigma_sat,
+            ion = ion
+        )
+#        self.spectrum = spectrum
+#        self.ion = ion
+#        self.nsigma_sat = nsigma_sat
+#        self.lambda_Z, self.g = self._get_ion_properties(self.ion)
+#        Pod.__init__(self)
+        #breakpoint()
+        if take_min_doublet:
             self._get_weaker_tau()
         # Part A
         if correct_h1:
-            print("Part A: correct for higher order Lyman contamination")
+            Console.print_verbose_info("Part A: correct for higher order Lyman contamination")
             if self.ion == "o6":
                 self.h1_contam_flag = np.zeros(len(self.z))	
             self._correct_for_h1(self.tau, self.tau_rec, self.lambdaa, self.flag,
@@ -371,16 +432,16 @@ class Metal(Pod):
                 self.flag[h1_contam] += Pod.FLAG_DISCARD 
         # Part B
         if correct_self:
-            print("Part B: correct for self contamination")
+            Console.print_verbose_info("Part B: correct for self contamination")
             self._correct_for_self(nsigma_contam = nsigma_contam)
         # Part C
         if take_min_doublet:
-            print("Part C: Take doublet minimum")
+            Console.print_verbose_info("Part C: Take doublet minimum")
             self._take_min_of_doublet(nsigma_dm = nsigma_dm)
         # fix up some stuff...
         if output_log:
             self._log_all_taus()
-        print("*** Done ***\n")
+        Console.print_verbose_info("*** Done ***\n")
 
     @staticmethod
     def _get_ion_properties(ion):
@@ -401,7 +462,9 @@ class Metal(Pod):
     
     def _get_flux(self):
         lambda_rest = self.lambda_Z[0]
-        lambdaa = lambda_rest * (1.0 + self.z) 
+        lambdaa = lambda_rest * (1.0 + self.z)
+#        self._raw_pixel_filter = (lambdaa >= self.spectrum.lambdaa[0]) & (lambdaa <= self.spectrum.lambdaa[-1])
+#        within_spectral_range = np.where(self._raw_pixel_filter)
         within_spectral_range = np.where((lambdaa >= self.spectrum.lambdaa[0])
             & (lambdaa <= self.spectrum.lambdaa[-1]))
         self.z = self.z[within_spectral_range]
@@ -448,7 +511,7 @@ class Metal(Pod):
                     n_higher_order):
         tau_rec_h1_function = self.spectrum.interp_f_lambda(self.spectrum.h1.lambdaa, 
             10**(self.spectrum.h1.tau_rec))
-        print("Subtracting", n_higher_order, "HI lines")
+        Console.print_verbose_info("Subtracting", n_higher_order, "HI lines")
         for j in range(n_higher_order):
             order = j + 1 # avoid lya
             index_lambdas, lambdas = self._get_h1_correction_lambdas(tau_rec, 
@@ -499,9 +562,13 @@ class Metal(Pod):
 
     def _correct_for_self(self,
                         num_iterations = 5,
-                        nsigma_contam = Pod.N_SIGMA): 		
+                        nsigma_contam = Pod.N_SIGMA):
+        """
+        See Turner et al. 2014 App. A (pg. 25)
+        """
+        
         # Step B (i)
-        print("Part (i)")
+        Console.print_verbose_info("Part (i)")
         # Make a tau function that spans the full spectral wavelength range 
         saturated = (self.spectrum.flux <= self.nsigma_sat * 
             self.spectrum.sigma_noise)
@@ -518,11 +585,11 @@ class Metal(Pod):
             contaminated = np.zeros(len(self.flag), dtype = int)
         bad_pixel_from_spectrum = self.flag % 2 == 1
         self.flag[(contaminated != 0) & (~bad_pixel_from_spectrum)] += Pod.FLAG_DISCARD
-        print("Number of contaminated / out of range pixels:", len(np.where(
+        Console.print_verbose_info("Number of contaminated / out of range pixels:", len(np.where(
             contaminated)[0]))
-        print("Pixels remaining:", len(np.where(self.flag % 2 == 0)[0]))
+        Console.print_verbose_info("Pixels remaining:", len(np.where(self.flag % 2 == 0)[0]))
         # Step B (ii)
-        print("Part (ii)")
+        Console.print_verbose_info("Part (ii)")
         # These are the slightly lower wavelength positions to be 
         # subtracted in the self correction
         lambdas = self.lambdaa * self.lambda_Z[0] / self.lambda_Z[1] 
@@ -548,17 +615,18 @@ class Metal(Pod):
         # Do the correction
         tau_old = self.tau_rec.copy()
         # For the ones outside tau rec, subtract only once 
-        subtract = (self.g[1] / self.g[0])* tau_function(lambdas_full)
-        self.tau_rec[index_lambdas_full] = tau_old[index_lambdas_full] - subtract	
+        subtract = (self.g[1] / self.g[0]) * tau_function(lambdas_full)
+        Console.print_debug(f"Metal line self correction (out-of-range pixels): {{:{1 + int(np.log10(tau_old.shape[0]))}.0f}} / {{:{1 + int(np.log10(tau_old.shape[0]))}.0f}} pixels have a negitive subtraction component".format((subtract < 0).sum(), subtract.shape[0]))
+        self.tau_rec[index_lambdas_full] = tau_old[index_lambdas_full] - subtract
         # Iterate over the rest of the pixels 
         not_converged = 1
         subtract_old = 0
-        while not_converged:
+        while not_converged: # Top of pg. 25 right hand column
             idx_bad = (self.flag % 2 == 1)
-            tau_rec_function = self.spectrum.interp_f_lambda(self.lambdaa[~idx_bad], 
-                self.tau_rec[~idx_bad])
+            tau_rec_function = self.spectrum.interp_f_lambda(self.lambdaa[~idx_bad], self.tau_rec[~idx_bad])
             subtract = (self.g[1] / self.g[0])* tau_rec_function(lambdas_rec)
-            self.tau_rec[index_lambdas_rec] = tau_old[index_lambdas_rec] - subtract 
+            Console.print_debug(f"Metal line self correction (itteritive):          {{:{1 + int(np.log10(tau_old.shape[0]))}.0f}} / {{:{1 + int(np.log10(tau_old.shape[0]))}.0f}} pixels have a negitive subtraction component".format((subtract < 0).sum(), subtract.shape[0]))
+            self.tau_rec[index_lambdas_rec] = tau_old[index_lambdas_rec] - subtract
             not_converged = max(abs(subtract - subtract_old)) > 1E-4
             subtract_old = subtract
         
@@ -600,5 +668,4 @@ class Metal(Pod):
         replace_with_w = ((lhs > rhs) & (self.flag_w % 2 == 0))
         self.tau_rec = np.where(replace_with_w, tau2, tau1)
         self.flag[replace_with_w] += Pod.FLAG_REP
-        print("Replacing", len(np.where(
-            replace_with_w)[0]), "pixels with those from the weaker doublet")
+        Console.print_verbose_info("Replacing", len(np.where(replace_with_w)[0]), "pixels with those from the weaker doublet")

@@ -31,6 +31,8 @@ def plot_spectrum(
                     dataset_alphas: Union[List[float], None],
                     x_min: Union[float, None] = None,
                     x_max: Union[float, None] = None,
+                    y_min: Union[float, None] = None,
+                    y_max: Union[float, None] = None,
                     title: Union[str, None] = None,
                     #figure: Union[Figure, None] = None,
                     #axis: Union[Axes, None] = None,
@@ -68,11 +70,11 @@ def plot_spectrum(
     xlims = (min_x_value if x_min is None else x_min, max_x_value if x_max is None else x_max)
     widest_xlims = (min(min_x_value, xlims[0]), max(max_x_value, xlims[1]))
     ylims = (-0.25, plt.ylim()[1])
-    plot_objects.axis.add_patch(Rectangle((xlims[0], -1.0), widest_xlims[1] - widest_xlims[0], 1.0, facecolor = "grey", alpha = 0.8))
-    plot_objects.axis.add_patch(Rectangle((xlims[0], 1.0), widest_xlims[1] - widest_xlims[0], 1.0, facecolor = "grey", alpha = 0.8))
+    plot_objects.axis.add_patch(Rectangle((widest_xlims[0], -1.0), widest_xlims[1] - widest_xlims[0], 1.0, facecolor = "grey", alpha = 0.8))
+    plot_objects.axis.add_patch(Rectangle((widest_xlims[0], 1.0), widest_xlims[1] - widest_xlims[0], 1.0, facecolor = "grey", alpha = 0.8))
 
     plot_objects.axis.set_xlim(xlims)
-    plot_objects.axis.set_ylim(ylims)
+    plot_objects.axis.set_ylim((ylims[0] if y_min is None else y_min, ylims[1] if y_max is None else y_max))
 
     if title is not None:
         plot_objects.axis.set_title(title)

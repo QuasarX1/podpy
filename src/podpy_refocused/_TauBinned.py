@@ -11,7 +11,7 @@ any questions, comment or issues.
 
 import numpy as np
 import numpy.random as rd
-from QuasarCode import Console
+from QuasarCode import Settings, Console
 
 from . import _universe as un
 
@@ -70,7 +70,7 @@ class TauBinned:
         self.chunk_size = chunk_size
         self.ion_x = tau_x_object.ion
         self.ion_y = tau_y_object.ion
-        print("*** Binning optical depths ***")
+        Console.print_verbose_info("*** Binning optical depths ***")
         # Create the optical depth arrays
         lambda_x, tau_x, tau_y = TauBinned._find_pixel_pairs(tau_x_object, tau_y_object)
         self.pix_pairs_wavelength = lambda_x
@@ -78,8 +78,8 @@ class TauBinned:
         self.pix_pairs_y = tau_y
         # Get the flat level, tau_min
         self._get_tau_min(tau_x, tau_y)
-        print("Binning", self.ion_x, "vs.", self.ion_y)
-        print("Number of good pixels:", len(lambda_x))
+        Console.print_verbose_info("Binning", self.ion_x, "vs.", self.ion_y)
+        Console.print_verbose_info("Number of good pixels:", len(lambda_x))
         if use_legacy_code:
             tau_chunks_x, tau_chunks_y = self._calc_percentiles_legacy(lambda_x, tau_x, tau_y,
                                                                        tau_x_min, tau_x_max, bin_size)
@@ -153,7 +153,7 @@ class TauBinned:
         # bin the pixels
         pixel_bin_numbers = np.digitize(tau_x, self.edge_bins)
         # calculate the percentile
-        print("Calculating", self.percentile_value, "th percentiles")
+        Console.print_verbose_info("Calculating", self.percentile_value, "th percentiles")
         for i in range(num_bins):
             Console.print_debug(f"Doing bin index {i}.")
             # Identify which pixels are in this bin
@@ -201,7 +201,7 @@ class TauBinned:
         tau_binned_x, tau_binned_y = np.empty(num_bins), np.empty(num_bins)
         num_chunks_per_bin = np.zeros(num_bins)
         # calculate the percentile
-        print("Calculating", self.percentile_value, "th percentiles")
+        Console.print_verbose_info("Calculating", self.percentile_value, "th percentiles")
         for i in range(num_bins):
             Console.print_debug(f"Doing bin index {i}.")
             bin_pixels = np.where((tau_x > self.edge_bins[i]) & (tau_x < self.edge_bins[i+1]))[0]
@@ -237,7 +237,7 @@ class TauBinned:
 
     def _calc_errors(self, bsrs, tau_chunks_x, tau_chunks_y):
         # bootstrap resampling
-        print("Bootstrap resampling")
+        Console.print_verbose_info("Bootstrap resampling")
         rs = rd.RandomState(self.seed)
         num_bins = len(self.edge_bins) - 1
         val_matrix = np.empty((bsrs, num_bins)) 
@@ -245,7 +245,7 @@ class TauBinned:
         tau_fake_min = np.empty(bsrs)
         for i in range(bsrs):            
             if (i + 1) % 100 == 0:
-                print("...", i + 1)
+                Console.print_verbose_info("...", i + 1)
             # Make the fake spectrum of length num_chunks
             tau_fake_x = np.empty(0) 
             tau_fake_y = np.empty(0) 
@@ -279,7 +279,7 @@ class TauBinned:
 
     def _calc_errors_legacy(self, bsrs, tau_chunks_x, tau_chunks_y):
         # bootstrap resampling
-        print("Bootstrap resampling")
+        Console.print_verbose_info("Bootstrap resampling")
         rs = rd.RandomState(self.seed)
         num_bins = len(self.edge_bins) - 1
         val_matrix = np.empty((bsrs, num_bins)) 
@@ -287,7 +287,7 @@ class TauBinned:
         tau_fake_min = np.empty(bsrs)
         for i in range(bsrs):            
             if (i + 1) % 100 == 0:
-                print("...", i + 1)
+                Console.print_verbose_info("...", i + 1)
             # Make the fake spectrum of length num_chunks
             tau_fake_x = np.empty(0) 
             tau_fake_y = np.empty(0) 
