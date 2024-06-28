@@ -47,11 +47,14 @@ pod-plot-specwizard-spectrum = "podpy_refocused._scripts.spectrum_from_specwizar
 pod-plot-specwizard-overdensity = "podpy_refocused._scripts.overdensity_from_specwizard:main"
 pod-plot-specwizard-weighted-overdensity = "podpy_refocused._scripts.weighted_quantities_from_specwizard:main_overdensity"
 pod-plot-specwizard-weighted-temperature = "podpy_refocused._scripts.weighted_quantities_from_specwizard:main_temperature"
+pod-create-specwizard-noise-file = "podpy_refocused._scripts.create_noise_profile_from_observations:main"
+pod-plot-specwizard-noise-file = "podpy_refocused._scripts.plot_noise_profile:main"
 
 [tool.hatch.version]
 path = "src/podpy_refocused/__about__.py"
 
 [tool.hatch.envs.default]
+python = "3.10"
 dependencies = [
   "coverage[toml]>=6.5",
   "pytest",

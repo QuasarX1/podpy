@@ -12,10 +12,11 @@ any questions, comment or issues.
 from . import _universe as un
 from ._Pod import Pod, LymanAlpha, Metal
 from ._Ions import Ion
-from ._SpecWizard import SpecWizard_Data
+from ._SpecWizard import SpecWizard_Data, SpecWizard_NoiseProfile
 
+from functools import singledispatchmethod
 import os
-from typing import cast, Union, Tuple, List, Callable
+from typing import cast, Union, Tuple, List, Callable, Collection, Iterable, Iterator
 
 import numpy as np
 import scipy.interpolate as intp
@@ -525,15 +526,301 @@ class KodiaqFits_Spectrum(Spectrum):
                           **kwargs
                           )
 
+class SpectrumCollection(Collection[Spectrum], Iterable):
+    def __init__(self, *spectra: Spectrum):
+        self.__spectra: List[Spectrum] = list(spectra)
+
+        for spectrum in self.__spectra:
+            if "h1" in vars(spectrum):
+                raise ValueError("Spectra provided already have H I recovered. Only provide unaltered Spectrum objects.")
+
+        self.__is_h1_recovered: bool = False
+        self.__number_of_highter_lyman_transitions: Union[int, None] = None
+        self.__is_c4_recovered: bool = False
+        self.__is_si4_recovered: bool = False
+        self.__is_o6_recovered: bool = False
+
+        self.__are_DLAs_masked: bool = self.__spectra[0].mask_dla
+        self.__are_bad_regions_masked: bool = self.__spectra[0].mask_badreg
+        for spectrum in self.__spectra:
+            if spectrum.mask_dla != self.__are_DLAs_masked:
+                raise ValueError("Inconsistent masking of DLAs.")
+            if spectrum.mask_badreg != self.__are_bad_regions_masked:
+                raise ValueError("Inconsistent masking of bad regions.")
+        
+        self.__has_continuum_been_fit: bool = False
+
+    @classmethod
+    def from_specwizard(
+        cls,
+        data:                                             Union[SpecWizard_Data, str]           = "./LongSpectrum.hdf5",
+        object_name:                                      Union[str, None]                      = None,
+        mask_directory:                                   Union[str, None]                      = None,
+        sightline_filter:                                 Union[List[bool], List[int], None]    = None,
+        mask_bad_regions:                                 bool                                  = False,
+        mask_dla:                                         bool                                  = False,
+        use_flux_without_noise:                           bool                                  = False,
+        noise_override_signal_to_noise:                   Union[float, Collection[float], None] = None,
+        noise_override_signal_to_noise_wavelength_limits: Union[Collection[float], None]        = None,
+        noise_override_min_noise:                         Union[float, None]                    = None,
+        noise_override_profile:                           Union[SpecWizard_NoiseProfile, None]  = None,
+        noise_override_default_to_existing_random:        bool                                  = False
+    ) -> "SpectrumCollection":
+        
+        if (noise_override_signal_to_noise is not None and noise_override_min_noise is None) or (noise_override_signal_to_noise is None and noise_override_min_noise is not None): # XOR
+            raise ValueError("Provide arguments for both \"noise_override_signal_to_noise\" and \"noise_override_min_noise\" or neither. Got one but not the other.")
+        use_custom_signal_to_noise = noise_override_signal_to_noise is not None or noise_override_min_noise is not None
 
 
+        use_custom_noise_file = noise_override_profile is not None
+        if use_custom_noise_file and use_custom_signal_to_noise:
+            raise ValueError("Arguments provided for both custom signal to noise and a custom noise profile. These options are exclusive.")
+
+        if use_flux_without_noise and (use_custom_signal_to_noise or use_custom_noise_file):
+            raise ValueError("Noiseless flux setting specified alongside noise override options. These options are exclusive.")
+
+        if isinstance(data, str):
+            data = SpecWizard_Data(data)
+
+        fluxes: List[np.ndarray]
+        flux_error_sigmas: Union[List[np.ndarray], None] = None
+        if use_custom_signal_to_noise:
+            fluxes, flux_error_sigmas = data.get_flux_with_artificial_signal_to_noise(
+                          signal_to_noise = noise_override_signal_to_noise,
+                                min_noise = noise_override_min_noise,
+                                    index = sightline_filter,
+                    wavelength_boundaries = noise_override_signal_to_noise_wavelength_limits,
+                      use_existing_random = noise_override_default_to_existing_random
+            )
+        elif use_custom_noise_file:
+            fluxes, flux_error_sigmas = data.get_flux_using_noise_profile(
+                            noise_profile = noise_override_profile,
+                                    index = sightline_filter,
+                      use_existing_random = noise_override_default_to_existing_random
+            )
+        elif use_flux_without_noise or not data.noise_avalible:
+            if not use_flux_without_noise:
+                Console.print_verbose_warning("No error data avalible in SpecWizard output file. Using noiseless flux.")
+            fluxes = data.get_flux(sightline_filter)
+        else:
+            fluxes = data.get_noisey_flux(sightline_filter)
+            flux_error_sigmas = data.get_flux_noise_sigma(sightline_filter)
+
+        n_spectra = len(fluxes)
+
+        return cls(
+            *[Spectrum(
+                z_qso = float(data.header["Z_qso"]),
+                wavelength_px = data.wavelengths,
+                flux_px = fluxes[i],
+                noise_sigma_px = flux_error_sigmas[i] if flux_error_sigmas is not None else np.zeros_like(fluxes[i], dtype = float),
+                object_name = object_name,
+                filepath = mask_directory,
+                mask_badreg = mask_bad_regions,
+                mask_dla = mask_dla
+            ) for i in range(n_spectra)]
+        )
+
+    @property
+    def masked_DLAs(self) -> bool:
+        return self.__are_DLAs_masked
+
+    @property
+    def masked_bad_regions(self) -> bool:
+        return self.__are_bad_regions_masked
+    
+    @property
+    def is_h1_recovered(self) -> bool:
+        return self.__is_h1_recovered
+    
+    @property
+    def is_c4_recovered(self) -> bool:
+        return self.__is_c4_recovered
+    
+    @property
+    def is_si4_recovered(self) -> bool:
+        return self.__is_si4_recovered
+    
+    @property
+    def is_o6_recovered(self) -> bool:
+        return self.__is_o6_recovered
+    
+    def __len__(self) -> int:
+        return len(self.__spectra)
+
+    def __iter__(self) -> Iterator[Spectrum]:
+        return iter(self.__spectra)
+
+    def __contains__(self, spectrum: Spectrum) -> bool:
+        return spectrum in self.__spectra
+    
+    @singledispatchmethod
+    def __getitem__(self, index: Union[int, slice, List[int]]) -> Union[Spectrum, List[Spectrum]]:
+        try:
+            return self[list(index)]
+        except:
+            raise TypeError(f"Unsupported index type: {type(index)}")
+    @__getitem__.register(int)
+    def _(self, index: int) -> Spectrum:
+        return self.__spectra[index]
+    @__getitem__.register(slice)
+    def _(self, index: slice) -> List[Spectrum]:
+        return self.__spectra[index]
+    @__getitem__.register(list)
+    def _(self, index: List[int]) -> List[Spectrum]:
+        if not isinstance(index[0], int):
+            raise TypeError(f"Unsupported index type: {type(index[0])}")
+        return [self[i] for i in index]
+
+    def fit_continuum(self) -> None:
+        if self.__has_continuum_been_fit:
+            raise RuntimeError("Continuum fit already performed for these spectra.")
+        if not self.__is_h1_recovered:
+            raise RuntimeError("Continuum fit attempted before recovering H I.")
+        for spectrum in self.__spectra:
+            spectrum.fit_continuum()
+        self.__has_continuum_been_fit = True
+
+    def recover_h1(
+                    self,
+                    identify_h1_contamination: bool  = True,
+                    correct_h1_contamination:  bool  = True,
+                    n_higher_order_lyman:      int   = 16,
+                    saturationn_sigma_limit:   float = None
+    ) -> Tuple[LymanAlpha, ...]:
+        if self.__is_h1_recovered:
+            raise RuntimeError("H I has already been recovered for these spectra.")
+        lyman_alpha_kwargs = {}
+        lyman_alpha_kwargs["n_higher_order"] = n_higher_order_lyman
+        lyman_alpha_kwargs["correct_contam"] = 0 if not identify_h1_contamination else 1 if not correct_h1_contamination else 2
+        if saturationn_sigma_limit is not None:
+            lyman_alpha_kwargs["nsigma_sat"] = saturationn_sigma_limit
+        for spectrum in self.__spectra:
+            spectrum.get_tau_rec_h1(**lyman_alpha_kwargs)
+        self.__number_of_highter_lyman_transitions = n_higher_order_lyman
+        self.__is_h1_recovered = True
+        return self.h1
+
+    @property
+    def h1(self) -> Tuple[LymanAlpha, ...]:
+        if not self.__is_h1_recovered:
+            raise RuntimeError("H I not yet recovered.")
+        return tuple(spectrum.h1_data for spectrum in self.__spectra)
+
+    def recover_c4(
+                    self,
+                    observed_log10_flat_level:    Union[float, None] = None,
+                    apply_recomended_corrections: bool               = True,
+                    saturation_sigma_limit:       float              = None
+                ) -> Tuple[Metal, ...]:
+        if not self.__has_continuum_been_fit:
+            raise RuntimeError("Attempted to recover C IV before applying the continuum fit redwards of Ly alpha.")
+        if self.__is_c4_recovered:
+            raise RuntimeError("C IV has already been recovered for these spectra.")
+        offset = None if observed_log10_flat_level is None else 10**(observed_log10_flat_level)
+        for spectrum in self.__spectra:
+            if apply_recomended_corrections:
+                kwargs = {}
+                if saturation_sigma_limit is not None:
+                    kwargs["nsigma_sat"]    = saturation_sigma_limit
+                    kwargs["nsigma_dm"]     = saturation_sigma_limit
+                    kwargs["nsigma_contam"] = saturation_sigma_limit
+                spectrum.get_tau_rec_c4(**kwargs)
+            else:
+                # Calculate optical depths without any corrections
+                spectrum.get_tau_rec_ion("c4", False, False, False)
+            if observed_log10_flat_level is not None:
+                spectrum.c4.tau_rec = np.log10(10**(spectrum.c4.tau_rec) + offset)
+
+        self.__is_c4_recovered = True
+        return self.c4
+
+    @property
+    def c4(self) -> Tuple[Metal, ...]:
+        if not self.__is_c4_recovered:
+            raise RuntimeError("C IV not yet recovered.")
+        return tuple(spectrum.c4_data for spectrum in self.__spectra)
+
+    def recover_si4(
+                    self,
+                    observed_log10_flat_level:    Union[float, None] = None,
+                    apply_recomended_corrections: bool               = True,
+                    n_higher_order_lyman:         int                = 16,
+                    saturation_sigma_limit:       float              = None
+                ) -> Tuple[Metal, ...]:
+        if not self.__has_continuum_been_fit:
+            raise RuntimeError("Attempted to recover Si IV before applying the continuum fit redwards of Ly alpha.")
+        if self.__is_si4_recovered:
+            raise RuntimeError("Si IV has already been recovered for these spectra.")
+        offset = None if observed_log10_flat_level is None else 10**(observed_log10_flat_level)
+        for spectrum in self.__spectra:
+            if apply_recomended_corrections:
+                kwargs = {}
+                if saturation_sigma_limit is not None:
+                    kwargs["nsigma_sat"]    = saturation_sigma_limit
+                    kwargs["nsigma_dm"]     = saturation_sigma_limit
+                    kwargs["nsigma_contam"] = saturation_sigma_limit
+                spectrum.get_tau_rec_si4(n_higher_order = n_higher_order_lyman, **kwargs)
+            else:
+                # Calculate optical depths without any corrections
+                spectrum.get_tau_rec_ion("si4", False, False, False)
+            if observed_log10_flat_level is not None:
+                spectrum.si4.tau_rec = np.log10(10**(spectrum.si4.tau_rec) + 10**(offset))
+
+        self.__is_si4_recovered = True
+        return self.si4
+
+    @property
+    def si4(self) -> Tuple[Metal, ...]:
+        if not self.__is_si4_recovered:
+            raise RuntimeError("Si IV not yet recovered.")
+        return tuple(spectrum.si4_data for spectrum in self.__spectra)
+
+    def recover_o6(
+                    self,
+                    observed_log10_flat_level:    Union[float, None] = None,
+                    apply_recomended_corrections: bool               = True,
+                    n_higher_order_lyman:         int                = 16,
+                    saturation_sigma_limit:       float              = None
+                ) -> Tuple[Metal, ...]:
+        if self.__are_DLAs_masked:
+            raise RuntimeError("Attempted to recover O VI after masking DLAs.")
+        if self.__is_o6_recovered:
+            raise RuntimeError("O VI has already been recovered for these spectra.")
+        offset = None if observed_log10_flat_level is None else 10**(observed_log10_flat_level)
+        for spectrum in self.__spectra:
+            if apply_recomended_corrections:
+                kwargs = {}
+                if saturation_sigma_limit is not None:
+                    kwargs["nsigma_sat"]    = saturation_sigma_limit
+                    kwargs["nsigma_dm"]     = saturation_sigma_limit
+                    kwargs["nsigma_contam"] = saturation_sigma_limit
+                spectrum.get_tau_rec_o6(n_higher_order = n_higher_order_lyman, **kwargs)
+            else:
+                # Calculate optical depths without any corrections
+                spectrum.get_tau_rec_ion("o6", False, False, False)
+            if observed_log10_flat_level is not None:
+                spectrum.o6.tau_rec = np.log10(10**(spectrum.o6.tau_rec) + 10**(offset))
+
+        self.__is_o6_recovered = True
+        return tuple(spectrum.o6_data for spectrum in self.__spectra)
+    
+    @property
+    def o6(self) -> Tuple[Metal, ...]:
+        if not self.__is_o6_recovered:
+            raise RuntimeError("O VI not yet recovered.")
+        return tuple(spectrum.o6_data for spectrum in self.__spectra)
+
+
+
+'''
 def from_SpecWizard(
                     filepath:                  str   = "./LongSpectrum.hdf5",
                     object_name:               Union[str, None]                   = None,
                     mask_directory:            Union[str, None]                   = None,
                     sightline_filter:          Union[List[bool], List[int], None] = None,
-                    mask_bad_regions:          bool  = True,
-                    mask_dla:                  bool  = True,
+                    mask_bad_regions:          bool  = False,
+                    mask_dla:                  bool  = False,
                     identify_h1_contamination: bool  = True,
                     correct_h1_contamination:  bool  = True,
                     n_higher_order_lyman:      int   = 16,
@@ -553,7 +840,8 @@ def from_SpecWizard(
     quasar_redshift = float(data.header["Z_qso"])
 
     wavelengths = data.wavelengths
-    fluxes = data.get_flux(sightline_filter)
+#    fluxes = data.get_flux(sightline_filter)
+    fluxes = data.get_noisey_flux(sightline_filter)
     flux_error_sigmas = data.get_flux_noise_sigma(sightline_filter)
     n_spectra = len(fluxes)
 
@@ -629,7 +917,7 @@ def recover_c4(
                 observed_log10_flat_level:    Union[float, None] = None,
                 apply_recomended_corrections: bool               = True,
                 saturationn_sigma_limit:      float              = None
-              ) -> None:
+              ) -> Tuple[Metal, ...]:
     offset = None if observed_log10_flat_level is None else 10**(observed_log10_flat_level)
     for spectrum in spectra:
         if apply_recomended_corrections:
@@ -653,7 +941,7 @@ def recover_si4(
                 apply_recomended_corrections: bool = True,
                 n_higher_order_lyman:         int = 16,
                 saturationn_sigma_limit:      float = None
-              ) -> None:
+              ) -> Tuple[Metal, ...]:
     offset = None if observed_log10_flat_level is None else 10**(observed_log10_flat_level)
     for spectrum in spectra:
         if apply_recomended_corrections:
@@ -667,9 +955,9 @@ def recover_si4(
             # Calculate optical depths without any corrections
             spectrum.get_tau_rec_ion("si4", False, False, False)
         if observed_log10_flat_level is not None:
-            spectrum.o6.tau_rec = np.log10(10**(spectrum.o6.tau_rec) + 10**(offset))
+            spectrum.si4.tau_rec = np.log10(10**(spectrum.si4.tau_rec) + 10**(offset))
 
-    return tuple(spectrum.o6_data for spectrum in spectra)
+    return tuple(spectrum.si4_data for spectrum in spectra)
 
 def recover_o6(
                *spectra:                      Spectrum,
@@ -677,7 +965,7 @@ def recover_o6(
                 apply_recomended_corrections: bool = True,
                 n_higher_order_lyman:         int = 16,
                 saturationn_sigma_limit:      float = None
-              ) -> None:
+              ) -> Tuple[Metal, ...]:
     offset = None if observed_log10_flat_level is None else 10**(observed_log10_flat_level)
     for spectrum in spectra:
         if apply_recomended_corrections:
@@ -694,3 +982,4 @@ def recover_o6(
             spectrum.o6.tau_rec = np.log10(10**(spectrum.o6.tau_rec) + 10**(offset))
 
     return tuple(spectrum.o6_data for spectrum in spectra)
+'''

@@ -116,8 +116,12 @@ class TauBinned:
 
     def _get_tau_min(self, tau_x, tau_y):
         self._get_tau_c()
-        index_min = np.where(tau_x < self.tau_c) 
-        self.tau_min = np.percentile(tau_y[index_min], self.percentile_value)
+        index_min = np.where(tau_x < self.tau_c)[0]
+        if len(index_min) == 0:
+            Console.print_verbose_warning("Unable to calculate tau min - no datapoints in selection region.")
+            self.tau_min = -np.inf
+        else:
+            self.tau_min = np.percentile(tau_y[index_min], self.percentile_value)
 
     def _get_tau_c(self):
         if self.ion_x in ["h1"]:
