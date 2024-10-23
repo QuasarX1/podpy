@@ -126,14 +126,15 @@ for key in data:
 datasets = tuple(data.keys())
 
 
-def plot_synthetic(dataset: str, ion: str, colour = "green", label = None, axis = None):
+def plot_synthetic(dataset: str, ion: str, colour = "green", label = None, axis = None, linewidth = None):
     plotting_function = plt.plot if axis is None else axis.plot
     plotting_function(data[dataset][ion]["synthetic"][0],
                       data[dataset][ion]["synthetic"][1],
                       color = colour,
-                      label = label)
+                      label = label,
+                      linewidth = linewidth)
 
-def plot_obs(dataset: str, ion: str, colour = "red", label = None, axis = None):
+def plot_obs(dataset: str, ion: str, colour = "red", label = None, axis = None, linewidth = None):
     plotting_function = plt.errorbar if axis is None else axis.errorbar
     plotting_function(data[dataset][ion]["obs"]["centre"][0],
                       data[dataset][ion]["obs"]["centre"][1],
@@ -142,7 +143,8 @@ def plot_obs(dataset: str, ion: str, colour = "red", label = None, axis = None):
                       linestyle = "",
                       capsize = 2,
                       color = colour,
-                      label = label)
+                      label = label,
+                      linewidth = linewidth)
 
 
 
@@ -174,6 +176,8 @@ def plot_synthetic_Q1317_0507(ion: str, colour = None, label = "Turner+16 Q1317-
         kwargs["colour"] = colour
     kwargs["label"] = label
     kwargs["axis"] = axis
+    kwargs["axis"] = axis
+    kwargs["linewidth"] = 2
     plot_synthetic(**kwargs)
 
 def plot_obs_Q1317_0507(ion: str, colour = None, label = "Turner+16 Q1317-0507", axis = None):
@@ -184,4 +188,5 @@ def plot_obs_Q1317_0507(ion: str, colour = None, label = "Turner+16 Q1317-0507",
         kwargs["colour"] = colour
     kwargs["label"] = label
     kwargs["axis"] = axis
+    kwargs["linewidth"] = 2
     plot_obs(**kwargs)

@@ -359,18 +359,26 @@ def __main(
 
     # Plot results
 
-    figure, axis = plotting.pod_statistics(results = dataset_results[0], label = labels[0] if labels is not None else f"#{1}" if len(datafiles) > 1 and not combine_datafiles else "SpecWizard" if (aguirre05_obs or turner16_obs or turner16_synthetic) else None,
-                                           colour = colours[0] if colours is not None else None, linestyle = linestyles[0] if linestyles is not None else None,
-                                           x_min = x_min,
-                                           x_max = x_max,
-                                           y_min = y_min,
-                                           y_max = y_max,
-                                           title = title,
-                                           x_label = "$\\rm log_{10}$ $\\tau_{\\rm H I}$",
-                                           y_label = "Median $\\rm log_{10}$ $\\tau_{\\rm " + ("C IV" if c4 else "O VI") + "}$",
-                                           density = density and (density_dataset == 0 or combine_datafiles),
-                                           density_colourmap = density_colourmap,
-                                           density_uses_all_pixels = True)#TODO: change this to be an option that defaults to False!
+    plt.rcParams['font.size'] = 14
+
+    figure, axis = plotting.pod_statistics(
+        results = dataset_results[0], label = labels[0] if labels is not None else f"#{1}" if len(datafiles) > 1 and not combine_datafiles else "SpecWizard" if (aguirre05_obs or turner16_obs or turner16_synthetic) else None,
+        colour = colours[0] if colours is not None else None, linestyle = linestyles[0] if linestyles is not None else None,
+        x_min = x_min,
+        x_max = x_max,
+        y_min = y_min,
+        y_max = y_max,
+        title = title,
+        x_label = "$\\rm log_{10}$ $\\tau_{\\rm H I}$",
+        y_label = "Median $\\rm log_{10}$ $\\tau_{\\rm " + ("C IV" if c4 else "O VI") + "}$",
+        density = density and (density_dataset == 0 or combine_datafiles),
+        density_colourmap = density_colourmap,
+        density_uses_all_pixels = True,#TODO: change this to be an option that defaults to False!
+        figure_creation_kwargs = {
+            "figsize" : (6, 5.25),
+            "layout" : "tight"
+        }
+    )
     if not combine_datafiles:
         for i in range(1, len(datafiles)):
             figure, axis = plotting.pod_statistics(results = dataset_results[i], label = labels[i] if labels is not None else f"#{i+1}",
@@ -381,16 +389,18 @@ def __main(
                                                    hide_tau_min_label = True, allow_auto_set_labels = False, figure = figure, axis = axis)
     #TODO: change these to the combined datasets or have flags/params for each dataset
     if aguirre05_obs:
-        plotting.comparison_data.aguirre05.plot_obs(ion_string, label = "A+05 -- Obs. Data", axis = axis)
+        plotting.comparison_data.aguirre05.plot_obs(ion_string, label = "Aguirre+05 - Obs. Data", axis = axis)
     if turner16_obs:
-        plotting.comparison_data.turner16.plot_obs_Q1317_0507(ion_string, label = "T+16 -- Obs. Data", axis = axis)
+#        plotting.comparison_data.turner16.plot_obs_Q1317_0507(ion_string, label = "T+16 -- Obs. Data", axis = axis)
+        plotting.comparison_data.turner16.plot_obs_Q1317_0507(ion_string, label = "Turner+16 - Q1317-0507", axis = axis, colour = "mediumseagreen")
     if turner16_synthetic:
-        plotting.comparison_data.turner16.plot_synthetic_Q1317_0507(ion_string, label = "T+16 -- EAGLE", axis = axis)
-    axis.legend()
+#        plotting.comparison_data.turner16.plot_synthetic_Q1317_0507(ion_string, label = "T+16 -- EAGLE", axis = axis)
+        plotting.comparison_data.turner16.plot_synthetic_Q1317_0507(ion_string, label = "Turner+16 - EAGLE", axis = axis, colour = "mediumseagreen")
+    axis.legend(fontsize = 11)
 
     # Decide what to do with the plot
 
     if output_file is None:
         plt.show()
     else:
-        figure.savefig(output_file)
+        figure.savefig(output_file, dpi = 400)

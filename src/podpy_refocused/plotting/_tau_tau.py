@@ -64,10 +64,10 @@ def plot_pod_statistics(results: BinnedOpticalDepthResults,
     if density:
         plot_objects = plot_pod_pair_density(results, plot_objects = plot_objects, colourmap = density_colourmap, use_all_pixels = density_uses_all_pixels)
 
-    line_object = plot_objects.axis.plot((x_min, x_max), (results.tau_min, results.tau_min), color = colour, linestyle = ":", label = "$\\tau_{\\rm min}$" if not hide_tau_min_label else None)
+    line_object = plot_objects.axis.plot((x_min, x_max), (results.tau_min, results.tau_min), color = colour, linestyle = ":", label = "$\\tau_{\\rm min}$" if not hide_tau_min_label else None, linewidth = 2)
     if results.has_errors and not hide_errors:
         pass#TODO: add errors!
-    plot_objects.axis.plot(results.tau_binned_x, results.tau_binned_y, color = line_object[0].get_color(), linestyle = linestyle, label = label)
+    plot_objects.axis.plot(results.tau_binned_x, results.tau_binned_y, color = line_object[0].get_color(), linestyle = linestyle, label = label, linewidth = 2)
     #axis.title("T+16 Fig. 2 comparison -- Q1317-0507, z=3.7")
     if title is not None:
         plot_objects.axis.set_title(title)
@@ -107,7 +107,7 @@ def plot_pod_pair_density(
     if plot_objects is None or plot_objects.axis is None:
         raise RuntimeError("Internal error! Required plot axis object not generated.")
     
-    hexbin_object = plot_objects.axis.hexbin(results.pixel_x, results.pixel_y, bins = "log", cmap = colourmap, zorder = -int(2**64))
-    plot_objects.figure.colorbar(hexbin_object)#TODO: integrate with API
+    hexbin_object = plot_objects.axis.hexbin(results.pixel_x, results.pixel_y, bins = "log", gridsize = 500, cmap = colourmap, zorder = -int(2**64))
+    plot_objects.figure.colorbar(hexbin_object, label = "Number of Pixels")#TODO: integrate with API
     
     return plot_objects
