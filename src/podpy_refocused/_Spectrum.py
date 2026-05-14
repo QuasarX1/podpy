@@ -522,7 +522,7 @@ class KodiaqFits_Spectrum(Spectrum):
                             flux_px = flux,
                             noise_sigma_px = sigma_noise,
                             object_name = object_name,
-                            filepath = filepath
+                            filepath = filepath,
                           **kwargs
                           )
 
