@@ -12,3 +12,6 @@ LongSpectrum.hdf5
 
 # Ignore for VSCode debugging configuration
 .vscode/launch.json
+
+# Ignore build files from pip
+dist/
