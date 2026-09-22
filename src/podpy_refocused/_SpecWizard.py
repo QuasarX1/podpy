@@ -20,7 +20,7 @@ class SpecWizard_NoiseProfile(ABC):
     """
     Base class for representing a noise profile.
 
-    Must implement the `get_noise` method.
+    Must implement the `get_noise_scale` method.
     """
 
     @abstractmethod
