@@ -24,7 +24,10 @@ class SpecWizard_NoiseProfile(ABC):
     """
 
     @abstractmethod
-    def get_noise(self, wavelengths: np.ndarray, normalised_fluxes: np.ndarray) -> np.ndarray:
+    def get_noise_scale(self, wavelengths: np.ndarray, normalised_fluxes: np.ndarray) -> np.ndarray:
+        """
+        Load, generate or provide the standard deviation (sigma) of the gaussian used to represent noise.
+        """
         raise NotImplementedError("Subclasses must implement the get_noise method.")
 
     @singledispatchmethod
@@ -32,7 +35,7 @@ class SpecWizard_NoiseProfile(ABC):
         raise TypeError(f"Unexpected wavelength type: {type(wavelengths)}")
     @__call__.register(np.ndarray)
     def _(self, wavelengths: np.ndarray, normalised_fluxes: np.ndarray) -> np.ndarray:
-        return self.get_noise(wavelengths, normalised_fluxes)
+        return self.get_noise_scale(wavelengths, normalised_fluxes)
     @__call__.register(unyt_array)
     def _(self, wavelengths: unyt_array, normalised_fluxes: np.ndarray) -> np.ndarray:
         return self(wavelengths.to(angstrom).value, normalised_fluxes)
