@@ -185,15 +185,18 @@ class SpecWizard_Data(object):
             if isinstance(index, np.ndarray) and index.dtype == np.bool_:
                 if len(index.shape) != 1 or index.shape[0] != len(self):
                     raise IndexError(f"Mismached boolean filter shape: {len(self)} spectra are avalible (1D) but the provided filter had shape {index.shape}.")
-                index = [i for i in range(len(self)) if index[i]]
+                #index = [i for i in range(len(self)) if index[i]]
+                index = [int(i) for i in np.where(index)[0]]
             elif len(index) > 0 and isinstance(index[0], bool):
                 if len(index) < len(self):
                     index = list(index)
-                    index.extend([False] * len(self) - len(index))
+                    index.extend([False] * (len(self) - len(index)))
+                    Console.print_debug(f"Corrected Mask: {index}")
+                index = [int(i) for i in np.where(index)[0]]
 
             results = []
             for i in index:
-                if isinstance(i, int):
+                if isinstance(i, int): # This also accepts booleans!
                     results.append(self.__file["Spectrum{}".format(self.__first_spectrum_number + i)])
                 elif isinstance(i, str):
                     results.append(self.__file[f"Spectrum{i}"])
@@ -247,7 +250,7 @@ class SpecWizard_Data(object):
             args_are_single_value = True
             normalised_flux = np.array([normalised_flux], dtype = float)
         if gaussian_sample is None:
-            gaussian_sample = np.random.normal(0, 1, normalised_flux.shape)
+            gaussian_sample = np.random.normal(0, 1, normalised_flux.shape)#TODO: update to use np.random.Generator(np.random.PCG64(SEED)).normal(0, 1)
 
         new_flux = SpecWizard_Data._apply_noise(normalised_flux, sigma * gaussian_sample)
         
