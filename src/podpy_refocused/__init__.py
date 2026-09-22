@@ -8,6 +8,6 @@ from ._Spectrum import Spectrum, KodiaqFits_Spectrum, SpectrumCollection
 from ._TauBinned import TauBinned, BinnedOpticalDepthResults, bin_pixels_from_SpecWizard, bin_combined_pixels_from_SpecWizard
 from . import _universe as universe
 from ._Ions import Ion
-from ._SpecWizard import SpecWizard_Data, SpecWizard_NoiseProfile
+from ._SpecWizard import SpecWizard_Data, SpecWizard_NoiseProfile, SpecWizard_NoiseProfile_File
 
 from . import plotting

@@ -3,6 +3,7 @@
 # SPDX-License-Identifier: MIT
 from ._Ions import Ion
 
+from abc import ABC, abstractmethod
 from functools import singledispatchmethod
 from typing import Any, Union, List, Tuple, Iterable, Collection
 import os
@@ -15,12 +16,42 @@ from QuasarCode import Console
 
 
 
-class SpecWizard_NoiseProfile(object):
+class SpecWizard_NoiseProfile(ABC):
+    """
+    Base class for representing a noise profile.
+
+    Must implement the `get_noise` method.
+    """
+
+    @abstractmethod
+    def get_noise(self, wavelengths: np.ndarray, normalised_fluxes: np.ndarray) -> np.ndarray:
+        raise NotImplementedError("Subclasses must implement the get_noise method.")
+
+    @singledispatchmethod
+    def __call__(self, wavelengths: Any, normalised_fluxes: Any) -> Union[np.ndarray, float]:
+        raise TypeError(f"Unexpected wavelength type: {type(wavelengths)}")
+    @__call__.register(np.ndarray)
+    def _(self, wavelengths: np.ndarray, normalised_fluxes: np.ndarray) -> np.ndarray:
+        return self.get_noise(wavelengths, normalised_fluxes)
+    @__call__.register(unyt_array)
+    def _(self, wavelengths: unyt_array, normalised_fluxes: np.ndarray) -> np.ndarray:
+        return self(wavelengths.to(angstrom).value, normalised_fluxes)
+    @__call__.register(float)
+    def _(self, wavelength: float, normalised_flux: float) -> float:
+        return self(np.array([wavelength], dtype = float), np.array([normalised_flux], dtype = float))[0]
+    @__call__.register(unyt_quantity)#TODO: check if this is an issue due to inheritance
+    def _(self, wavelength: unyt_quantity, normalised_flux: float) -> float:
+        return self(wavelength.to(angstrom).value, normalised_flux)
+
+
+
+
+class SpecWizard_NoiseProfile_File(SpecWizard_NoiseProfile):
     """
     Noise profile interpolation table used by SpecWizard.
 
     To read from an existing file, use:
-        SpecWizard_NoiseProfile.read(filepath)
+        SpecWizard_NoiseProfile_File.read(filepath)
 
     To retrive the value of sigma for a given pixel, call the instance passing the wavelength(s) and normalised flux(es).
 
@@ -71,25 +102,33 @@ class SpecWizard_NoiseProfile(object):
         """
         return self.__interpolator
 
-    @singledispatchmethod
-    def __call__(self, wavelengths: Any, normalised_fluxes: Any) -> Union[np.ndarray, float]:
-        raise TypeError(f"Unexpected wavelength type: {type(wavelengths)}")
-    @__call__.register(np.ndarray)
-    def _(self, wavelengths: np.ndarray, normalised_fluxes: np.ndarray) -> np.ndarray:
+    @abstractmethod
+    def get_noise(self, wavelengths: np.ndarray, normalised_fluxes: np.ndarray) -> np.ndarray:
         result = np.empty_like(normalised_fluxes)
         in_bounds = (self.__wavelengths[0] <= wavelengths) & (wavelengths <= self.__wavelengths[-1])
         result[in_bounds] = self.__interpolator(np.column_stack((wavelengths[in_bounds], normalised_fluxes[in_bounds])))
         result[~in_bounds] = result[in_bounds].max()
         return result
-    @__call__.register(unyt_array)
-    def _(self, wavelengths: unyt_array, normalised_fluxes: np.ndarray) -> np.ndarray:
-        return self(wavelengths.to(angstrom).value, normalised_fluxes)
-    @__call__.register(float)
-    def _(self, wavelength: float, normalised_flux: float) -> float:
-        return self(np.array([wavelength], dtype = float), np.array([normalised_flux], dtype = float))[0]
-    @__call__.register(unyt_quantity)#TODO: check if this is an issue due to inheritance
-    def _(self, wavelength: unyt_quantity, normalised_flux: float) -> float:
-        return self(wavelength.to(angstrom).value, normalised_flux)
+
+    #@singledispatchmethod
+    #def __call__(self, wavelengths: Any, normalised_fluxes: Any) -> Union[np.ndarray, float]:
+    #    raise TypeError(f"Unexpected wavelength type: {type(wavelengths)}")
+    #@__call__.register(np.ndarray)
+    #def _(self, wavelengths: np.ndarray, normalised_fluxes: np.ndarray) -> np.ndarray:
+    #    result = np.empty_like(normalised_fluxes)
+    #    in_bounds = (self.__wavelengths[0] <= wavelengths) & (wavelengths <= self.__wavelengths[-1])
+    #    result[in_bounds] = self.__interpolator(np.column_stack((wavelengths[in_bounds], normalised_fluxes[in_bounds])))
+    #    result[~in_bounds] = result[in_bounds].max()
+    #    return result
+    #@__call__.register(unyt_array)
+    #def _(self, wavelengths: unyt_array, normalised_fluxes: np.ndarray) -> np.ndarray:
+    #    return self(wavelengths.to(angstrom).value, normalised_fluxes)
+    #@__call__.register(float)
+    #def _(self, wavelength: float, normalised_flux: float) -> float:
+    #    return self(np.array([wavelength], dtype = float), np.array([normalised_flux], dtype = float))[0]
+    #@__call__.register(unyt_quantity)#TODO: check if this is an issue due to inheritance
+    #def _(self, wavelength: unyt_quantity, normalised_flux: float) -> float:
+    #    return self(wavelength.to(angstrom).value, normalised_flux)
     
     def write(self, filepath: str, allow_overwrite: bool = False) -> None:
         """
@@ -104,13 +143,13 @@ class SpecWizard_NoiseProfile(object):
             file.create_dataset(name = "NormalizedNoise",     data = np.array(self.__sigma_table.T, dtype = np.float32))
 
     @staticmethod
-    def read(filepath: str) -> "SpecWizard_NoiseProfile":
+    def read(filepath: str) -> "SpecWizard_NoiseProfile_File":
         """
         Read from an existing SpecWizard noise profile file.
         """
 
         with h5.File(filepath, "r") as file:
-            return SpecWizard_NoiseProfile(
+            return SpecWizard_NoiseProfile_File(
                 wavelengths = unyt_array(file["Wavelength_Angstrom"][:], units = angstrom),
                 normalised_fluxes = file["NormalizedFlux"][:],
                 sigma_table = file["NormalizedNoise"][:].T
