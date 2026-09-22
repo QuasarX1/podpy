@@ -87,6 +87,10 @@ def main():
                 description = "Mask for line-of-sight selection from input file(s).\nUse a string of 'T' and 'F' seperated by a semicolon for each input file if more than one is specified.\nFor example: \"TFTTF\" for a file with 5 lines of sight.\nSpecifying only one input mask and many files will result in the mask being appled to each file.\nSpecifying fewer mask elements than lines of sight avalible will result in just the first N lines of sight\nbeing considered for a mask of length N.",
                 conversion_function = ScriptWrapper.make_list_converter(";", lambda v: [e.lower() == "t" for e in v])
             ),
+            ScriptWrapper.Flag(
+                "show-multiple-los-ribbons",
+                description = "Plot individual lines of sight as transparent lines. Only applies when multiple files are NOT combined and more than one line of sight is selected when using a mask.",
+            ),
 
 
 
@@ -212,6 +216,7 @@ def __main(
             x_min: float, x_max: float, y_min: Union[float, None], y_max: Union[float, None],
             output_file: Union[str, None],
             input_los_mask: Union[List[List[bool]], None],
+            show_multiple_los_ribbons: bool,
             ignore_noise: Union[List[bool], None],
             min_noises: Union[List[float], None],
             signal_to_noises: Union[List[float], None],
@@ -244,7 +249,8 @@ def __main(
         file_indexes = list(range(len(datafiles)))
         if ignore_noise is not None:
             for i in file_indexes:
-                if ignore_noise[i] is not None:
+              #if ignore_noise[i] is not None:#TODO: should this be a boolean check as well???
+                if ignore_noise[i] is not None and ignore_noise[i]:#TODO: fix is untested!!!!
                     noise_settings[i] = {
                         "use_flux_without_noise" : True
                     }
@@ -298,7 +304,10 @@ def __main(
 
     dataset_results = []
     if combine_datafiles:
+        show_multiple_los_ribbons = False # This cannot be used when combining multiple files.
         datasets = []
+    if show_multiple_los_ribbons:
+        ribbon_results = []
 #pylint:disable-next=consider-using-enumerate
     for i in range(len(datafiles)):
 
@@ -316,6 +325,7 @@ def __main(
 
         # Load the data (and recover H I)
         data = SpecWizard_Data(datafile)
+
         spectrum_objects: SpectrumCollection = SpectrumCollection.from_specwizard(
             data = data,
             sightline_filter = input_los_mask[i] if input_los_mask is not None else None,
@@ -350,6 +360,10 @@ def __main(
         if not combine_datafiles:
             # Combine and bin pixels
             dataset_results.append(bin_combined_pixels_from_SpecWizard("h1", ion_string, *spectrum_objects, x_limits = (x_min, x_max), n_bootstrap_resamples = 0, legacy = False))
+            if show_multiple_los_ribbons:
+                ribbon_results.append([])
+                for spectrum_item in spectrum_objects:
+                    ribbon_results[-1].append(bin_combined_pixels_from_SpecWizard("h1", ion_string, spectrum_item, x_limits = (x_min, x_max), n_bootstrap_resamples = 0, legacy = False))
         else:
             datasets.extend(spectrum_objects)
 
@@ -361,24 +375,63 @@ def __main(
 
     plt.rcParams['font.size'] = 14
 
-    figure, axis = plotting.pod_statistics(
-        results = dataset_results[0], label = labels[0] if labels is not None else f"#{1}" if len(datafiles) > 1 and not combine_datafiles else "SpecWizard" if (aguirre05_obs or turner16_obs or turner16_synthetic) else None,
-        colour = colours[0] if colours is not None else None, linestyle = linestyles[0] if linestyles is not None else None,
-        x_min = x_min,
-        x_max = x_max,
-        y_min = y_min,
-        y_max = y_max,
-        title = title,
-        x_label = "$\\rm log_{10}$ $\\tau_{\\rm H I}$",
-        y_label = "Median $\\rm log_{10}$ $\\tau_{\\rm " + ("C IV" if c4 else "O VI") + "}$",
-        density = density and (density_dataset == 0 or combine_datafiles),
-        density_colourmap = density_colourmap,
-        density_uses_all_pixels = True,#TODO: change this to be an option that defaults to False!
-        figure_creation_kwargs = {
-            "figsize" : (6, 5.25),
-            "layout" : "tight"
-        }
-    )
+    if show_multiple_los_ribbons:
+        figure, axis = plotting.pod_statistics(
+            results = ribbon_results[0][0], label = None,
+            colour = "grey",
+            alpha = 0.3,
+            x_min = x_min,
+            x_max = x_max,
+            y_min = y_min,
+            y_max = y_max,
+            title = title,
+            x_label = "$\\rm log_{10}$ $\\tau_{\\rm H I}$",
+            y_label = "Median $\\rm log_{10}$ $\\tau_{\\rm " + ("C IV" if c4 else "O VI") + "}$",
+            density = False,
+            show_tau_min = False,
+            hide_tau_min_label = True,
+        )
+        for j in range(1, len(ribbon_results[0])):
+            figure, axis = plotting.pod_statistics(
+                results = ribbon_results[0][j], label = None,
+                colour = "grey",
+                alpha = 0.3,
+                density = False,
+                show_tau_min = False,
+                hide_tau_min_label = True,
+                allow_auto_set_labels = False,
+                figure = figure,
+                axis = axis,
+            )
+        figure, axis = plotting.pod_statistics(
+            results = dataset_results[0], label = labels[0] if labels is not None else f"#{1}" if len(datafiles) > 1 and not combine_datafiles else "SpecWizard" if (aguirre05_obs or turner16_obs or turner16_synthetic) else None,
+            colour = colours[0] if colours is not None else None, linestyle = linestyles[0] if linestyles is not None else None,
+            density = density and (density_dataset == 0 or combine_datafiles),
+            density_colourmap = density_colourmap,
+            density_uses_all_pixels = True,#TODO: change this to be an option that defaults to False!
+            allow_auto_set_labels = False,
+            figure = figure,
+            axis = axis,
+        )
+    else:
+        figure, axis = plotting.pod_statistics(
+            results = dataset_results[0], label = labels[0] if labels is not None else f"#{1}" if len(datafiles) > 1 and not combine_datafiles else "SpecWizard" if (aguirre05_obs or turner16_obs or turner16_synthetic) else None,
+            colour = colours[0] if colours is not None else None, linestyle = linestyles[0] if linestyles is not None else None,
+            x_min = x_min,
+            x_max = x_max,
+            y_min = y_min,
+            y_max = y_max,
+            title = title,
+            x_label = "$\\rm log_{10}$ $\\tau_{\\rm H I}$",
+            y_label = "Median $\\rm log_{10}$ $\\tau_{\\rm " + ("C IV" if c4 else "O VI") + "}$",
+            density = density and (density_dataset == 0 or combine_datafiles),
+            density_colourmap = density_colourmap,
+            density_uses_all_pixels = True,#TODO: change this to be an option that defaults to False!
+            figure_creation_kwargs = {
+                "figsize" : (6, 5.25),
+                "layout" : "tight"
+            }
+        )
     if not combine_datafiles:
         for i in range(1, len(datafiles)):
             figure, axis = plotting.pod_statistics(results = dataset_results[i], label = labels[i] if labels is not None else f"#{i+1}",
@@ -387,6 +440,18 @@ def __main(
                                                    density_colourmap = density_colourmap,
                                                    density_uses_all_pixels = True,#TODO: change this to be an option that defaults to False!
                                                    hide_tau_min_label = True, allow_auto_set_labels = False, figure = figure, axis = axis)
+            if show_multiple_los_ribbons:
+                for j in range(len(ribbon_results[i])):
+                    figure, axis = plotting.pod_statistics(
+                        results = ribbon_results[i][j], label = None,
+                        colour = "grey",
+                        alpha = 0.3,
+                        density = False,
+                        hide_tau_min_label = True,
+                        allow_auto_set_labels = False,
+                        figure = figure,
+                        axis = axis,
+                    )
     #TODO: change these to the combined datasets or have flags/params for each dataset
     if aguirre05_obs:
         plotting.comparison_data.aguirre05.plot_obs(ion_string, label = "Aguirre+05 - Obs. Data", axis = axis)
