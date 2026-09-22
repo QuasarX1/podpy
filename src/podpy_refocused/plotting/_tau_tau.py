@@ -16,8 +16,10 @@ from .._TauBinned import BinnedOpticalDepthResults
 def plot_pod_statistics(results: BinnedOpticalDepthResults,
                         label: str,
                         colour: Any = "blue",
+                        alpha: float = 1.0,
                         linestyle: Any = "-",
                         hide_errors: bool = False,
+                        show_tau_min: bool = True,
                         hide_tau_min_label: bool = False,
                         x_min: Union[float, None] = None,
                         x_max: Union[float, None] = None,
@@ -55,24 +57,28 @@ def plot_pod_statistics(results: BinnedOpticalDepthResults,
         x_min = results.tau_binned_x[0]
     if x_max is None:
         x_max = results.tau_binned_x[-1]
-    if x_label is None:
+    if x_label is None and allow_auto_set_labels:
         x_label = f"$\\rm log_{{10}}$ $\\tau_{{\\rm {results.ion_x}}}$"
-    if y_label is None:
+    if y_label is None and allow_auto_set_labels:
         percentile_last_digit = int(results.percentile / 10) - (10 * int(results.percentile / 10))
-        y_label = ("Median" if results.is_median else f"{results.percentile}{'st' if (results.percentile % 1.0 == 0 and percentile_last_digit == 1) else 'nd' if (results.percentile % 1.0 == 0 and percentile_last_digit == 2) else 'rd' if (results.percentile % 1.0 == 0 and percentile_last_digit == 3) else 'th' if (results.percentile % 1.0 == 0) else ''} percentile") + f" $\\rm log_{{10}}$ $\\tau_{{\\rm {results.ion_x}}}$"
+        y_label = ("Median" if results.is_median else f"{results.percentile}{'st' if (results.percentile % 1.0 == 0 and percentile_last_digit == 1) else 'nd' if (results.percentile % 1.0 == 0 and percentile_last_digit == 2) else 'rd' if (results.percentile % 1.0 == 0 and percentile_last_digit == 3) else 'th' if (results.percentile % 1.0 == 0) else ''} percentile") + f" $\\rm log_{{10}}$ $\\tau_{{\\rm {results.ion_y}}}$"
 
     if density:
         plot_objects = plot_pod_pair_density(results, plot_objects = plot_objects, colourmap = density_colourmap, use_all_pixels = density_uses_all_pixels)
 
-    line_object = plot_objects.axis.plot((x_min, x_max), (results.tau_min, results.tau_min), color = colour, linestyle = ":", label = "$\\tau_{\\rm min}$" if not hide_tau_min_label else None, linewidth = 2)
-    if results.has_errors and not hide_errors:
-        pass#TODO: add errors!
-    plot_objects.axis.plot(results.tau_binned_x, results.tau_binned_y, color = line_object[0].get_color(), linestyle = linestyle, label = label, linewidth = 2)
+    if show_tau_min:
+        line_object = plot_objects.axis.plot((x_min, x_max), (results.tau_min, results.tau_min), color = colour, linestyle = ":", label = "$\\tau_{\\rm min}$" if not hide_tau_min_label else None, linewidth = 2)
+        if results.has_errors and not hide_errors:
+            pass#TODO: add errors!
+    plot_objects.axis.plot(results.tau_binned_x, results.tau_binned_y, color = colour if not show_tau_min else line_object[0].get_color(), linestyle = linestyle, label = label, linewidth = 2, alpha = alpha)
     #axis.title("T+16 Fig. 2 comparison -- Q1317-0507, z=3.7")
     if title is not None:
         plot_objects.axis.set_title(title)
-    if allow_auto_set_labels:
+    if x_label is not None:
+        Console.print_debug(f"Setting X-axis label to \"{x_label}\".")
         plot_objects.axis.set_xlabel(x_label)
+    if y_label is not None:
+        Console.print_debug(f"Setting Y-axis label to \"{y_label}\".")
         plot_objects.axis.set_ylabel(y_label)
     plot_objects.axis.legend()
     if allow_auto_set_limits:

@@ -74,6 +74,8 @@ def plot_spectrum(
     plot_objects.axis.add_patch(Rectangle((widest_xlims[0], 1.0), widest_xlims[1] - widest_xlims[0], 1.0, facecolor = "grey", alpha = 0.8))
 
     plot_objects.axis.set_xlim(xlims)
+    #Console.print_info(f"X:     {xlims[0]} -> {xlims[1]}")
+    #Console.print_info(f"X-max: {xlims[0]} -> {xlims[1]}")
     plot_objects.axis.set_ylim((ylims[0] if y_min is None else y_min, ylims[1] if y_max is None else y_max))
 
     if title is not None:
