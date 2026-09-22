@@ -472,13 +472,15 @@ class Spectrum:
         Quick view plot of QSO spectrum
         """
         fig, ax = plt.subplots(figsize = (12, 3))
-        ax.plot(self.lambdaa, self.flux, lw = 0.5, c = 'b')
-        ax.plot(self.lambdaa, self.sigma_noise, lw = 0.5, c = 'r')
-        ax.axhline(y = 0, ls = ':', c = 'k', lw = 0.5)
-        ax.axhline(y = 1, ls = ':', c = 'k', lw = 0.5)
-        ax.set_ylim(-0.2, 1.2)
-        ax.set_xlabel("$\lambda$ [\AA]")
-        ax.set_ylabel("Normalized flux")
+        ax.plot(self.lambdaa, self.flux, lw = 0.5, c = "blue")
+        ax.plot(self.lambdaa, self.sigma_noise, lw = 0.5, c = "red")
+        ax.axhline(y = 0, linestyle = ":", c = "black", linewidth = 0.5)
+        ax.axhline(y = 1, linestyle = ":", c = "black", linewidth = 0.5)
+        min_value = min(min(self.flux), min(self.sigma_noise))
+        max_value = max(max(self.flux), max(self.sigma_noise))
+        ax.set_ylim(min_value - 0.05 * min_value, max(1.2, max_value + 0.05 * max_value))
+        ax.set_xlabel("$\\lambda\\,\\,[\\rm\\AA]$")
+        ax.set_ylabel("Normalized Flux")
         ax.minorticks_on()
         fig.show()
 
@@ -696,6 +698,7 @@ class SpectrumCollection(Collection[Spectrum], Iterable):
         if saturationn_sigma_limit is not None:
             lyman_alpha_kwargs["nsigma_sat"] = saturationn_sigma_limit
         for spectrum in self.__spectra:
+            Console.print_debug(f"tau_HI recovery arguments: {lyman_alpha_kwargs}")
             spectrum.get_tau_rec_h1(**lyman_alpha_kwargs)
         self.__number_of_highter_lyman_transitions = n_higher_order_lyman
         self.__is_h1_recovered = True
