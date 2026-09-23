@@ -413,7 +413,7 @@ def bin_combined_pixels_from_SpecWizard(ion_x: str, ion_y: str, *spectra: "UserI
                                         n_bootstrap_resamples: int = 1000,
                                         random_seed: int = 12345,
                                         legacy: bool = False
-    ) -> Dict[str, Union[np.ndarray, float, None]]:
+    ) -> BinnedOpticalDepthResults:
     """
     Combines and bins multiple spectra (compatible with the output of "from_SpecWizard()").
 
